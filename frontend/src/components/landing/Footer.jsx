@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BrainCircuit } from 'lucide-react';
+import BrandIcon from '../BrandIcon';
 
 export default function Footer() {
   return (
@@ -10,8 +10,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4 group inline-flex">
-              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-accent-purple/50 transition-colors">
-                <BrainCircuit className="w-5 h-5 text-accent-blue" />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
+                <BrandIcon className="h-full w-full rounded-lg" />
               </div>
               <span className="text-xl font-semibold tracking-tight text-white">MindSense <span className="text-gradient">AI</span></span>
             </Link>

@@ -1,15 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import SignInPage from './pages/auth/SignInPage';
+import SignUpPage from './pages/auth/SignUpPage';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        {/* Auth routes placeholders */}
-        <Route path="/login" element={<div className="p-20 text-white">Login Page Placeholder</div>} />
-        <Route path="/register" element={<div className="p-20 text-white">Register Page Placeholder</div>} />
-        <Route path="/assessment" element={<div className="p-20 text-white">Assessment Setup Placeholder</div>} />
+        <Route path="/login" element={<SignInPage />} />
+        <Route path="/register" element={<SignUpPage />} />
+        <Route path="/assessment" element={<div className="p-20 text-slate-900">Assessment Setup Placeholder</div>} />
       </Routes>
     </Router>
   );

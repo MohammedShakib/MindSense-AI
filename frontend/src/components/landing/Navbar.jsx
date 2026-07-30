@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, BrainCircuit } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import BrandIcon from '../BrandIcon';
 import { Button } from '../ui/Button';
 import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,9 +30,9 @@ export default function Navbar() {
           <motion.div 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-blue/10 to-accent-purple/10 flex items-center justify-center border border-accent-purple/20 group-hover:border-accent-purple/40 shadow-sm transition-colors"
+            className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform"
           >
-            <BrainCircuit className="w-6 h-6 text-accent-blue" />
+            <BrandIcon className="h-full w-full" />
           </motion.div>
           <span className="text-xl font-semibold tracking-tight text-slate-900">MindSense <span className="text-gradient">AI</span></span>
         </Link>
