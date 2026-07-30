@@ -12,6 +12,9 @@ from app.models.user import User, PasswordResetOTP
 from app.schemas.user import UserCreate, UserResponse, Token
 from app.schemas.auth import ForgotPasswordRequest, VerifyOTPRequest, ResetPasswordRequest, GoogleAuthRequest
 from app.api import deps
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+from google.auth.exceptions import GoogleAuthError
 import secrets
 from datetime import datetime
 
@@ -155,19 +158,34 @@ async def google_auth(
     req: GoogleAuthRequest,
     db: AsyncSession = Depends(get_db)
 ) -> Any:
-    # TODO: Verify google token using google-auth library
-    # Simulated for now
-    if not req.token:
-        raise HTTPException(status_code=400, detail="Invalid token")
-        
-    # Mocking google payload
-    email = "test@example.com"
-    google_id = "mock_google_id"
+    if not settings.GOOGLE_CLIENT_ID:
+        raise HTTPException(status_code=500, detail="Google login is not configured")
+
+    try:
+        payload = id_token.verify_oauth2_token(
+            req.token,
+            google_requests.Request(),
+            settings.GOOGLE_CLIENT_ID,
+        )
+    except (ValueError, GoogleAuthError):
+        raise HTTPException(status_code=400, detail="Invalid Google token")
+
+    email = payload.get("email")
+    google_id = payload.get("sub")
+    email_verified = payload.get("email_verified")
+
+    if not email or not google_id or not email_verified:
+        raise HTTPException(status_code=400, detail="Google account email is not verified")
     
     result = await db.execute(select(User).filter(User.email == email))
     user = result.scalars().first()
     
-    if not user:
+    if user:
+        if not user.google_id:
+            user.google_id = google_id
+            await db.commit()
+            await db.refresh(user)
+    else:
         user = User(
             email=email,
             google_id=google_id,

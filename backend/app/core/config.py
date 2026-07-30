@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     DB_ECHO: bool = False
+    GOOGLE_CLIENT_ID: str | None = None
+    BACKEND_CORS_ORIGINS: str = "http://localhost:5173"
     
     # PostgreSQL Configuration
     POSTGRES_USER: str = "postgres"

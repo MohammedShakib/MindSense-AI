@@ -7,6 +7,8 @@ alembic
 pydantic
 pydantic-settings
 email-validator
+google-auth
+requests
 passlib[bcrypt]
 python-jose[cryptography]
 python-multipart
