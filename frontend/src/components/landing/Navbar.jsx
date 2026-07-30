@@ -66,20 +66,31 @@ export default function Navbar() {
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="md:hidden glass-nav absolute top-full left-0 right-0 max-h-[calc(100vh-76px)] overflow-y-auto border-t border-slate-200/50 py-4 px-4 sm:px-6 flex flex-col gap-4 shadow-xl"
-          >
-            <Link to="#how-it-works" className="text-slate-700 font-medium py-2 hover:text-accent-blue" onClick={() => setMobileMenuOpen(false)}>How It Works</Link>
-            <Link to="#features" className="text-slate-700 font-medium py-2 hover:text-accent-blue" onClick={() => setMobileMenuOpen(false)}>Features</Link>
-            <Link to="#privacy" className="text-slate-700 font-medium py-2 hover:text-accent-blue" onClick={() => setMobileMenuOpen(false)}>Privacy</Link>
-            <hr className="border-slate-200" />
-            <Button variant="ghost" className="justify-start px-0" to="/login">Sign In</Button>
-            <Button variant="primary" className="w-full" to="/register">Get Started</Button>
-          </motion.div>
+          <>
+            <motion.button
+              type="button"
+              aria-label="Close menu"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 top-[76px] z-[-1] bg-slate-950/35 md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="md:hidden absolute top-full left-0 right-0 max-h-[calc(100vh-76px)] overflow-y-auto border-t border-slate-200 bg-white py-4 px-4 sm:px-6 flex flex-col gap-4 shadow-2xl"
+            >
+              <Link to="#how-it-works" className="text-slate-700 font-medium py-2 hover:text-accent-blue" onClick={() => setMobileMenuOpen(false)}>How It Works</Link>
+              <Link to="#features" className="text-slate-700 font-medium py-2 hover:text-accent-blue" onClick={() => setMobileMenuOpen(false)}>Features</Link>
+              <Link to="#privacy" className="text-slate-700 font-medium py-2 hover:text-accent-blue" onClick={() => setMobileMenuOpen(false)}>Privacy</Link>
+              <hr className="border-slate-200" />
+              <Button variant="ghost" className="justify-start px-0" to="/login">Sign In</Button>
+              <Button variant="primary" className="w-full" to="/register">Get Started</Button>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </nav>
