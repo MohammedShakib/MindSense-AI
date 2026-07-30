@@ -4,10 +4,10 @@ import { FileText, Download, Calendar, ShieldCheck } from 'lucide-react';
 
 export default function ReportsTracking() {
   return (
-    <section className="py-24 bg-slate-50 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="py-16 sm:py-20 lg:py-24 bg-slate-50 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
-        <div className="flex flex-col-reverse lg:flex-row items-center gap-16">
+        <div className="flex flex-col-reverse lg:flex-row items-center gap-10 sm:gap-12 lg:gap-16">
           
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
@@ -17,8 +17,8 @@ export default function ReportsTracking() {
             className="flex-1 w-full"
           >
             {/* Visual representation of a report */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl relative max-w-sm mx-auto lg:mx-0">
-              <div className="absolute -top-4 -right-4 w-12 h-12 bg-accent-blue rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-xl relative w-full max-w-sm mx-auto lg:mx-0">
+              <div className="absolute -top-3 -right-2 sm:-top-4 sm:-right-4 w-11 h-11 sm:w-12 sm:h-12 bg-accent-blue rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <Download className="w-5 h-5 text-white" />
               </div>
               
@@ -37,7 +37,7 @@ export default function ReportsTracking() {
                 <div className="h-4 bg-slate-100 rounded w-full"></div>
                 <div className="h-4 bg-slate-100 rounded w-5/6"></div>
                 
-                <div className="py-4 my-2 border-y border-slate-100 flex items-center justify-between">
+                <div className="py-4 my-2 border-y border-slate-100 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <div className="text-[10px] uppercase font-bold text-slate-500">Avg. Concern Score</div>
                     <div className="text-2xl font-black text-slate-800">76 / 100</div>
@@ -59,18 +59,18 @@ export default function ReportsTracking() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, type: "spring" }}
-            className="flex-1"
+            className="flex-1 w-full"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-200/50 text-slate-600 font-semibold text-sm mb-6">
               <Calendar className="w-4 h-4" />
               <span>Long-term Tracking</span>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-5 sm:mb-6 tracking-tight leading-tight">
               Reports & Tracking.
             </h2>
             
-            <p className="text-lg text-slate-700 mb-8 leading-relaxed">
+            <p className="text-base sm:text-lg text-slate-700 mb-8 leading-relaxed">
               Your wellness journey isn't just about today. Keep a secure history of all your assessments and generate beautifully formatted PDF reports for personal records.
             </p>
 
@@ -79,7 +79,7 @@ export default function ReportsTracking() {
                 <Download className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <h4 className="text-lg font-bold text-slate-900">Exportable PDFs</h4>
+                <h4 className="text-base sm:text-lg font-bold text-slate-900">Exportable PDFs</h4>
                 <p className="text-slate-700">Download clean, easy-to-read summaries of your weekly or monthly wellness patterns.</p>
               </div>
             </div>
@@ -89,7 +89,7 @@ export default function ReportsTracking() {
                 <ShieldCheck className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <h4 className="text-lg font-bold text-slate-900">Secure History</h4>
+                <h4 className="text-base sm:text-lg font-bold text-slate-900">Secure History</h4>
                 <p className="text-slate-700">Your historical data is safely encrypted and fully under your control. Delete past records at any time.</p>
               </div>
             </div>

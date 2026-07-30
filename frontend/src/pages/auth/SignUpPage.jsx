@@ -19,7 +19,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center relative p-6">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center relative px-4 py-8 sm:p-6">
       
       {/* Background Elements */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-accent-blue/10 blur-[120px] rounded-full mix-blend-multiply pointer-events-none"></div>
@@ -31,17 +31,17 @@ export default function SignUpPage() {
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className="w-full max-w-[440px] relative z-10"
       >
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center mb-6 sm:mb-8">
           <Link to="/" className="flex items-center gap-2 group mb-6">
             <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105">
               <BrandIcon className="h-full w-full" />
             </div>
           </Link>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight text-center">Create an account</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight text-center">Create an account</h1>
           <p className="text-slate-500 mt-2 text-center">Join MindSense AI today</p>
         </div>
 
-        <div className="bg-white p-8 rounded-[24px] border border-slate-100 shadow-xl shadow-slate-200/50">
+        <div className="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-[24px] border border-slate-100 shadow-xl shadow-slate-200/50">
           <form onSubmit={handleSubmit} className="space-y-5">
             
             <div className="space-y-1">
@@ -117,9 +117,9 @@ export default function SignUpPage() {
             </Button>
           </form>
 
-          <div className="mt-6 flex items-center justify-between gap-4">
+          <div className="mt-6 flex items-center justify-between gap-3 sm:gap-4">
             <div className="h-px bg-slate-100 flex-1"></div>
-            <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">or continue with</span>
+            <span className="text-[10px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider whitespace-nowrap">or continue with</span>
             <div className="h-px bg-slate-100 flex-1"></div>
           </div>
 
@@ -134,7 +134,7 @@ export default function SignUpPage() {
           </button>
         </div>
 
-        <p className="text-center mt-8 text-sm text-slate-500">
+        <p className="text-center mt-6 sm:mt-8 text-sm text-slate-500">
           Already have an account?{' '}
           <Link to="/login" className="font-semibold text-accent-blue hover:text-accent-purple transition-colors">Sign in</Link>
         </p>

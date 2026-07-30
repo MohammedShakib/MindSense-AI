@@ -4,10 +4,10 @@ import { LineChart, LayoutDashboard, History, TrendingUp, TrendingDown } from 'l
 
 export default function PersonalDashboard() {
   return (
-    <section className="py-24 bg-white relative">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="features" className="py-16 sm:py-20 lg:py-24 bg-white relative scroll-mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-blue/10 text-accent-blue font-semibold text-sm mb-6">
             <LayoutDashboard className="w-4 h-4" />
             <span>Personal Dashboard</span>
@@ -17,17 +17,17 @@ export default function PersonalDashboard() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, type: "spring" }}
-            className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-5 sm:mb-6 tracking-tight leading-tight"
           >
             Track Your Wellness Journey.<br/>
             <span className="text-slate-600">See the Bigger Picture.</span>
           </motion.h2>
         </div>
 
-        <div className="bg-slate-50 rounded-[32px] p-8 md:p-12 border border-slate-200 shadow-sm relative overflow-hidden">
+        <div className="bg-slate-50 rounded-2xl sm:rounded-[32px] p-4 sm:p-8 md:p-12 border border-slate-200 shadow-sm relative overflow-hidden">
           
           {/* Mock Dashboard UI */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8 relative z-10">
             
             {/* Left Column: Gauge */}
             <motion.div 
@@ -35,7 +35,7 @@ export default function PersonalDashboard() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="col-span-1 bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center"
+              className="col-span-1 bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center"
             >
               <h3 className="text-lg font-bold text-slate-800 mb-6">Current Status</h3>
               <div className="relative w-40 h-40 mb-4">
@@ -63,28 +63,28 @@ export default function PersonalDashboard() {
             </motion.div>
 
             {/* Right Column: History & Progress */}
-            <div className="col-span-1 md:col-span-2 flex flex-col gap-8">
+            <div className="col-span-1 md:col-span-2 flex flex-col gap-5 sm:gap-8 min-w-0">
               
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex-1"
+                className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm flex-1 min-w-0"
               >
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
                   <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
                     <LineChart className="w-5 h-5 text-accent-indigo" />
                     Progress History
                   </h3>
-                  <div className="flex items-center gap-2 text-sm font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+                  <div className="flex w-fit items-center gap-2 text-xs sm:text-sm font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
                     <TrendingDown className="w-4 h-4" />
                     Concern decreased by 14%
                   </div>
                 </div>
                 
                 {/* Mock Chart Area */}
-                <div className="h-40 w-full flex items-end justify-between gap-2 px-2">
+                <div className="h-40 w-full min-w-0 flex items-end justify-between gap-1.5 sm:gap-2 px-0 sm:px-2">
                   {[88, 92, 85, 80, 78, 75, 72].map((height, i) => (
                     <div key={i} className="w-full flex flex-col items-center gap-2">
                       <motion.div 
@@ -94,7 +94,7 @@ export default function PersonalDashboard() {
                         transition={{ duration: 1, delay: 0.5 + (i * 0.1) }}
                         className={`w-full max-w-[40px] rounded-t-md ${i === 6 ? 'bg-accent-blue' : 'bg-slate-200'}`}
                       ></motion.div>
-                      <span className="text-[10px] font-bold text-slate-400">Day {i + 1}</span>
+                      <span className="text-[9px] sm:text-[10px] font-bold text-slate-400">Day {i + 1}</span>
                     </div>
                   ))}
                 </div>
@@ -105,7 +105,7 @@ export default function PersonalDashboard() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
-                className="grid grid-cols-2 gap-4"
+                className="grid grid-cols-1 sm:grid-cols-2 gap-4"
               >
                 <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center">

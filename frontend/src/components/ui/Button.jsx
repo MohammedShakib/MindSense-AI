@@ -1,13 +1,11 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 
 const Button = React.forwardRef(({ 
   className, 
   variant = 'primary', 
   size = 'md', 
-  asChild = false,
   to,
   children,
   ...props 

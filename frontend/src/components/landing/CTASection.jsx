@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 
 export default function CTASection() {
   return (
-    <section className="py-32 relative overflow-hidden bg-slate-900">
+    <section id="about" className="py-20 sm:py-24 lg:py-32 relative overflow-hidden bg-slate-900 scroll-mt-20">
       
       {/* Background glowing effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-[#0B1021]"></div>
@@ -26,28 +26,28 @@ export default function CTASection() {
         </defs>
       </svg>
 
-      <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, type: "spring" }}
         >
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-5 sm:mb-6 tracking-tight leading-tight">
             Your Wellness Story Has <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-accent-purple to-accent-cyan">More Than One Signal.</span>
           </h2>
           
-          <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
             Bring those signals together with MindSense AI and gain a clearer, more complete perspective on your mental wellness.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto min-w-[240px] text-lg group shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_40px_rgba(139,92,246,0.5)]" to="/assessment">
+            <Button variant="primary" size="lg" className="w-full sm:w-auto sm:min-w-[240px] text-base sm:text-lg group shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_40px_rgba(139,92,246,0.5)]" to="/assessment">
               Start Your Assessment
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="secondary" size="lg" className="w-full sm:w-auto min-w-[200px] text-lg bg-white/5 border-white/10 text-white hover:bg-white/10" to="#about">
+            <Button variant="secondary" size="lg" className="w-full sm:w-auto sm:min-w-[200px] text-base sm:text-lg bg-white/5 border-white/10 text-white hover:bg-white/10" to="#about">
               Explore MindSense AI
             </Button>
           </div>

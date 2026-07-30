@@ -4,10 +4,10 @@ import BrandIcon from '../BrandIcon';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#080B14] border-t border-white/5 pt-20 pb-10 text-slate-400">
-      <div className="max-w-7xl mx-auto px-6">
+    <footer className="bg-[#080B14] border-t border-white/5 pt-14 sm:pt-20 pb-8 sm:pb-10 text-slate-400">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 sm:gap-12 mb-12 sm:mb-16">
           <div className="md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4 group inline-flex">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
@@ -41,8 +41,8 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <div className="flex items-center gap-6">
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 text-sm">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             <span>© 2026 MindSense AI. All rights reserved.</span>
           </div>
           

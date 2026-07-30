@@ -56,16 +56,16 @@ export default function HowItWorks() {
   };
 
   return (
-    <section id="how-it-works" className="py-24 relative bg-white border-t border-slate-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="how-it-works" className="py-16 sm:py-20 lg:py-24 relative bg-white border-t border-slate-100 shadow-sm scroll-mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 lg:mb-20">
           <motion.h2 
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, type: "spring" }}
-            className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-5 sm:mb-6 tracking-tight leading-tight"
           >
             Four Signals.<br/>
             <span className="text-slate-500">One Intelligent Assessment.</span>
@@ -77,20 +77,20 @@ export default function HowItWorks() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8"
         >
           {cards.map((card, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
               whileHover={{ y: -8, transition: { duration: 0.2 } }}
-              className={`group bg-white p-8 rounded-3xl border border-slate-100 shadow-sm transition-all duration-300 ${card.border}`}
+              className={`group bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-100 shadow-sm transition-all duration-300 ${card.border}`}
             >
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-300 ${card.bg}`}>
-                <card.icon className={`w-8 h-8 ${card.color}`} />
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center mb-5 sm:mb-6 transition-transform group-hover:scale-110 duration-300 ${card.bg}`}>
+                <card.icon className={`w-6 h-6 sm:w-8 sm:h-8 ${card.color}`} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-4">{card.title}</h3>
-              <p className="text-slate-700 leading-relaxed text-lg">
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-3 sm:mb-4 leading-tight">{card.title}</h3>
+              <p className="text-slate-700 leading-relaxed text-base sm:text-lg">
                 {card.description}
               </p>
             </motion.div>
