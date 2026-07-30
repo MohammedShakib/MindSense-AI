@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LineChart, LayoutDashboard, History, TrendingUp } from 'lucide-react';
+import { LineChart, LayoutDashboard, History, TrendingUp, TrendingDown } from 'lucide-react';
 
 export default function PersonalDashboard() {
   return (
@@ -20,7 +20,7 @@ export default function PersonalDashboard() {
             className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight"
           >
             Track Your Wellness Journey.<br/>
-            <span className="text-slate-500">See the Bigger Picture.</span>
+            <span className="text-slate-600">See the Bigger Picture.</span>
           </motion.h2>
         </div>
 
@@ -56,7 +56,7 @@ export default function PersonalDashboard() {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-4xl font-black text-slate-900">72</span>
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Score</span>
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Concern</span>
                 </div>
               </div>
               <p className="text-sm text-slate-500 font-medium">Updated 2 hours ago</p>
@@ -78,14 +78,14 @@ export default function PersonalDashboard() {
                     Progress History
                   </h3>
                   <div className="flex items-center gap-2 text-sm font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
-                    <TrendingUp className="w-4 h-4" />
-                    +12% vs last month
+                    <TrendingDown className="w-4 h-4" />
+                    Concern decreased by 14%
                   </div>
                 </div>
                 
                 {/* Mock Chart Area */}
                 <div className="h-40 w-full flex items-end justify-between gap-2 px-2">
-                  {[45, 52, 48, 60, 68, 65, 72].map((height, i) => (
+                  {[88, 92, 85, 80, 78, 75, 72].map((height, i) => (
                     <div key={i} className="w-full flex flex-col items-center gap-2">
                       <motion.div 
                         initial={{ height: 0 }}

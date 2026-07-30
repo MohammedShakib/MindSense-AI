@@ -39,12 +39,12 @@ export default function ReportsTracking() {
                 
                 <div className="py-4 my-2 border-y border-slate-100 flex items-center justify-between">
                   <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400">Average Score</div>
+                    <div className="text-[10px] uppercase font-bold text-slate-500">Avg. Concern Score</div>
                     <div className="text-2xl font-black text-slate-800">76 / 100</div>
                   </div>
                   <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400">Trend</div>
-                    <div className="text-sm font-bold text-emerald-600">+4.2%</div>
+                    <div className="text-[10px] uppercase font-bold text-slate-500">Trend</div>
+                    <div className="text-sm font-bold text-emerald-600">Concern decreased by 4.2%</div>
                   </div>
                 </div>
 
@@ -70,7 +70,7 @@ export default function ReportsTracking() {
               Reports & Tracking.
             </h2>
             
-            <p className="text-lg text-slate-600 mb-8 leading-relaxed">
+            <p className="text-lg text-slate-700 mb-8 leading-relaxed">
               Your wellness journey isn't just about today. Keep a secure history of all your assessments and generate beautifully formatted PDF reports for personal records.
             </p>
 
@@ -80,7 +80,7 @@ export default function ReportsTracking() {
               </div>
               <div>
                 <h4 className="text-lg font-bold text-slate-900">Exportable PDFs</h4>
-                <p className="text-slate-600">Download clean, easy-to-read summaries of your weekly or monthly wellness patterns.</p>
+                <p className="text-slate-700">Download clean, easy-to-read summaries of your weekly or monthly wellness patterns.</p>
               </div>
             </div>
 
@@ -90,7 +90,7 @@ export default function ReportsTracking() {
               </div>
               <div>
                 <h4 className="text-lg font-bold text-slate-900">Secure History</h4>
-                <p className="text-slate-600">Your historical data is safely encrypted and fully under your control. Delete past records at any time.</p>
+                <p className="text-slate-700">Your historical data is safely encrypted and fully under your control. Delete past records at any time.</p>
               </div>
             </div>
 

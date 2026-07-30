@@ -15,7 +15,7 @@ export default function Footer() {
               </div>
               <span className="text-xl font-semibold tracking-tight text-white">MindSense <span className="text-gradient">AI</span></span>
             </Link>
-            <p className="text-slate-500 max-w-xs leading-relaxed">
+            <p className="text-slate-400 max-w-xs leading-relaxed">
               Multimodal AI-powered wellness insights for better self-awareness.
             </p>
           </div>
@@ -53,8 +53,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 text-center text-xs text-slate-600 bg-white/5 py-3 rounded-lg border border-white/5">
-          Built for wellness awareness, not clinical diagnosis.
+        <div className="mt-8 text-center text-sm text-slate-400 bg-white/5 py-4 px-6 rounded-lg border border-white/10 leading-relaxed">
+          MindSense AI is designed for wellness awareness, self-reflection, and supportive guidance. It does not provide medical or psychiatric diagnoses and is not a replacement for professional mental-health care.
         </div>
       </div>
     </footer>

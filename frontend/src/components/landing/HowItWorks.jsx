@@ -12,7 +12,7 @@ const cards = [
     border: "group-hover:border-blue-200 group-hover:shadow-blue-500/10"
   },
   {
-    title: "Conversation Analysis",
+    title: "Text & Conversation Analysis",
     description: "AI analyzes conversational patterns, sentiment, and emotional signals while providing supportive guidance.",
     icon: MessageCircle,
     color: "text-accent-purple",
@@ -89,8 +89,8 @@ export default function HowItWorks() {
               <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-300 ${card.bg}`}>
                 <card.icon className={`w-8 h-8 ${card.color}`} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-4">{card.title}</h3>
-              <p className="text-slate-600 leading-relaxed text-lg">
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">{card.title}</h3>
+              <p className="text-slate-700 leading-relaxed text-lg">
                 {card.description}
               </p>
             </motion.div>

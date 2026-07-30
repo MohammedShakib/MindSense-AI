@@ -93,7 +93,7 @@ export default function AIWellnessSupport() {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900">Daily Wellness Tasks</h3>
               </div>
-              <p className="text-slate-600 pl-16">Personalized actionable steps based on your current signals. Example: <em>Take a 10-minute outdoor walk to reset focus.</em></p>
+              <p className="text-slate-700 pl-16">Personalized actionable steps based on your current signals. Example: <em>Take a 10-minute outdoor walk to reset focus.</em></p>
             </div>
 
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
@@ -103,7 +103,7 @@ export default function AIWellnessSupport() {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900">Guided Mindfulness</h3>
               </div>
-              <p className="text-slate-600 pl-16">Quick audio and breathing exercises. Example: <em>2-minute guided breathing session for stress relief.</em></p>
+              <p className="text-slate-700 pl-16">Quick audio and breathing exercises. Example: <em>2-minute guided breathing session for stress relief.</em></p>
             </div>
 
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
@@ -113,7 +113,7 @@ export default function AIWellnessSupport() {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900">Recommendations</h3>
               </div>
-              <p className="text-slate-600 pl-16">Curated wellness resources, articles, and videos tailored specifically to your recent assessment results.</p>
+              <p className="text-slate-700 pl-16">Curated wellness resources, articles, and videos tailored specifically to your recent assessment results.</p>
             </div>
           </motion.div>
 

@@ -67,7 +67,7 @@ export default function Privacy() {
               Your Wellness Data <br/>
               <span className="text-emerald-600">Deserves Privacy.</span>
             </motion.h2>
-            <p className="text-lg text-slate-600 mb-10 leading-relaxed max-w-lg">
+            <p className="text-lg text-slate-700 mb-10 leading-relaxed max-w-lg">
               Designed with privacy in mind. We collect only what is necessary to generate your wellness insights and protect your sensitive data through modern security architecture.
             </p>
 
@@ -86,7 +86,7 @@ export default function Privacy() {
                     </div>
                     <h4 className="font-bold text-slate-900">{point.title}</h4>
                   </div>
-                  <p className="text-sm text-slate-600 leading-relaxed pl-11">
+                  <p className="text-base text-slate-700 leading-relaxed pl-11">
                     {point.desc}
                   </p>
                 </motion.div>

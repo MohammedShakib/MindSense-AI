@@ -29,20 +29,20 @@ export default function AIAssessment() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-purple/10 text-accent-purple font-semibold text-sm mb-6">
               <BrainCircuit className="w-4 h-4" />
-              <span>Unified Intelligence</span>
+              <span>Powered by Multimodal AI</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
               One Unified <br/>
-              <span className="text-gradient">AI Assessment.</span>
+              <span className="text-gradient">Wellness Assessment.</span>
             </h2>
-            <p className="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg">
-              MindSense AI analyzes your 4 independent signals through our Multimodal Fusion Engine to generate a single, comprehensive Wellness Severity Score and Risk Level.
+            <p className="text-xl text-slate-700 mb-8 leading-relaxed max-w-lg">
+              MindSense AI analyzes your 4 independent signals through our Multimodal Fusion Engine to generate a single, comprehensive Wellness Concern Score and Concern Level.
             </p>
             
             <ul className="space-y-4">
               {[
-                "0-100 Standardized Severity Score",
-                "Dynamic Risk Level Indicators",
+                "0-100 Standardized Concern Score",
+                "Dynamic Concern Level Indicators",
                 "Overall Assessment Confidence Metric",
                 "Handles missing modalities seamlessly"
               ].map((item, i) => (
@@ -65,24 +65,24 @@ export default function AIAssessment() {
           >
             {/* Main Score Card */}
             <motion.div variants={itemVariants} className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 relative z-20 mb-6">
-              <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2">Final Assessment</div>
+              <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2">Wellness Concern Score</div>
               <div className="flex items-end gap-3 mb-6">
-                <span className="text-7xl font-black text-slate-900 leading-none">84</span>
+                <span className="text-7xl font-black text-slate-900 leading-none">72</span>
                 <span className="text-lg font-bold text-slate-400 mb-2">/ 100</span>
               </div>
               
               <div className="w-full bg-slate-100 rounded-full h-3 mb-2 overflow-hidden">
                 <motion.div 
                   initial={{ width: 0 }}
-                  whileInView={{ width: "84%" }}
+                  whileInView={{ width: "72%" }}
                   transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
-                  className="h-full bg-gradient-to-r from-accent-blue to-accent-purple rounded-full"
+                  className="h-full bg-gradient-to-r from-accent-blue to-orange-400 rounded-full"
                 ></motion.div>
               </div>
               <div className="flex justify-between text-xs font-semibold text-slate-400 mb-6 uppercase">
-                <span>Low</span>
+                <span>Lower Concern</span>
                 <span>Moderate</span>
-                <span>Elevated</span>
+                <span>Higher Concern</span>
               </div>
 
               <div className="flex items-center justify-between p-4 bg-orange-50 border border-orange-100 rounded-2xl">
@@ -91,8 +91,8 @@ export default function AIAssessment() {
                     <AlertTriangle className="w-5 h-5 text-orange-600" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-orange-800 uppercase tracking-wide">Risk Level</div>
-                    <div className="text-sm font-bold text-orange-900">Elevated Concern</div>
+                    <div className="text-xs font-bold text-orange-800 uppercase tracking-wide">Concern Level</div>
+                    <div className="text-sm font-bold text-orange-900">High Concern</div>
                   </div>
                 </div>
               </div>
