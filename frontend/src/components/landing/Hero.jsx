@@ -26,12 +26,12 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative pt-32 pb-20 overflow-hidden min-h-[90vh] flex items-center">
-      {/* Background glow elements (adjusted for light theme) */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent-blue/10 blur-[120px] rounded-full mix-blend-multiply pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[50%] bg-accent-purple/10 blur-[120px] rounded-full mix-blend-multiply pointer-events-none"></div>
+    <section className="relative min-h-screen overflow-hidden bg-[#f8fbff] flex items-center pt-28 pb-8">
+      {/* Hero background matched to the assessment visual */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_18%,rgba(59,130,246,0.13),transparent_34%),radial-gradient(circle_at_72%_48%,rgba(219,234,254,0.58),transparent_42%),radial-gradient(circle_at_86%_54%,rgba(226,232,240,0.72),transparent_38%),radial-gradient(circle_at_78%_76%,rgba(139,92,246,0.16),transparent_36%),radial-gradient(circle_at_88%_66%,rgba(6,182,212,0.10),transparent_30%),linear-gradient(90deg,rgba(219,234,254,0.48)_0%,rgba(248,251,255,0.96)_40%,rgba(242,247,255,0.92)_61%,rgba(236,242,252,0.88)_78%,rgba(237,233,254,0.64)_100%)]"></div>
+      <div className="absolute inset-x-0 bottom-0 h-28 pointer-events-none bg-gradient-to-t from-white/55 to-transparent"></div>
       
-      <div className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+      <div className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-[0.86fr_1.14fr] gap-12 items-center relative z-10">
         
         {/* Left Column */}
         <motion.div 
@@ -79,7 +79,7 @@ export default function Hero() {
         </motion.div>
 
         {/* Right Column */}
-        <div className="relative h-full w-full flex justify-center items-center">
+        <div className="relative h-full w-full flex justify-center items-center overflow-visible">
           <MultimodalVisual />
         </div>
 
