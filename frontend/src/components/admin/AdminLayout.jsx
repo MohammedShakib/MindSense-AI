@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { 
   LayoutDashboard, Users, FileBarChart, BrainCircuit, 
   ListChecks, Heart, Star, BarChart2, Activity, 
@@ -26,8 +26,10 @@ const AdminSidebarItem = ({ icon: Icon, label, to, active }) => {
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [databaseStatus, setDatabaseStatus] = useState({ connected: false, status: 'checking' });
   const [statusLoading, setStatusLoading] = useState(true);
+  const profileMenuRef = useRef(null);
   const location = useLocation();
 
   const mainNav = [
@@ -81,6 +83,19 @@ export default function AdminLayout({ children }) {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!profileMenuOpen) return undefined;
+
+    function handleClickOutside(event) {
+      if (!profileMenuRef.current?.contains(event.target)) {
+        setProfileMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [profileMenuOpen]);
 
   const isDatabaseConnected = Boolean(databaseStatus.connected);
   const databaseStatusLabel = statusLoading
@@ -160,8 +175,13 @@ export default function AdminLayout({ children }) {
           </div>
 
           {/* Profile Menu */}
-          <div className="group relative">
-            <button className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white p-2 text-left shadow-sm transition-all hover:border-indigo-200 hover:shadow-md">
+          <div className="relative" ref={profileMenuRef}>
+            <button
+              onClick={() => setProfileMenuOpen((open) => !open)}
+              className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white p-2 text-left shadow-sm transition-all hover:border-indigo-200 hover:shadow-md"
+              aria-expanded={profileMenuOpen}
+              aria-label="Open admin profile menu"
+            >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-900 text-sm font-black text-white">
                 A
               </div>
@@ -171,11 +191,12 @@ export default function AdminLayout({ children }) {
               </div>
             </button>
 
-            <div className="pointer-events-none absolute bottom-full left-0 mb-2 w-60 rounded-xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl shadow-slate-200/70 transition-all group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100">
+            <div className={`${profileMenuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'} absolute bottom-full left-0 mb-2 w-60 rounded-xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-200/70 transition-opacity`}>
               {profileMenuItems.map((item) => (
                 <Link
                   key={item.label}
                   to={item.to}
+                  onClick={() => setProfileMenuOpen(false)}
                   className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
                 >
                   <item.icon className="h-4 w-4 text-slate-400" />
@@ -184,6 +205,7 @@ export default function AdminLayout({ children }) {
               ))}
               <Link
                 to="/"
+                onClick={() => setProfileMenuOpen(false)}
                 className="mt-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50"
               >
                 <LogOut className="h-4 w-4" />
