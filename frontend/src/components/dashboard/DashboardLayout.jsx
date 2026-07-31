@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   LayoutDashboard, PlusCircle, History, MessageSquare,
   CheckSquare, Heart, Video, FileText, User, Settings,
@@ -64,7 +64,9 @@ export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [userProfile] = useState(() => getStoredUserProfile());
+  const profileMenuRef = useRef(null);
   const location = useLocation();
   const userInitials = getInitials(userProfile.name, userProfile.email);
 
@@ -93,6 +95,19 @@ export default function DashboardLayout({ children }) {
     if (notifOpen) window.addEventListener('click', handleClick);
     return () => window.removeEventListener('click', handleClick);
   }, [notifOpen]);
+
+  useEffect(() => {
+    if (!profileMenuOpen) return undefined;
+
+    function handleClickOutside(event) {
+      if (!profileMenuRef.current?.contains(event.target)) {
+        setProfileMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [profileMenuOpen]);
 
   return (
     <div className={`min-h-screen bg-[#F4F7FB] font-sans text-slate-900 transition-[padding] duration-300 ease-in-out ${collapsed ? 'lg:pl-[80px]' : 'lg:pl-[280px]'}`}>
@@ -147,10 +162,13 @@ export default function DashboardLayout({ children }) {
 
         {/* Profile Menu */}
         <div className="border-t border-slate-100 bg-slate-50/70 p-4">
-          <div className={`group relative ${collapsed ? 'flex justify-center' : ''}`}>
+          <div className={`relative ${collapsed ? 'flex justify-center' : ''}`} ref={profileMenuRef}>
             <button
+              onClick={() => setProfileMenuOpen((open) => !open)}
               className={`flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white p-2 text-left shadow-sm transition-all hover:border-indigo-200 hover:shadow-md ${collapsed ? 'justify-center' : ''}`}
               title={collapsed ? userProfile.name : undefined}
+              aria-expanded={profileMenuOpen}
+              aria-label="Open user profile menu"
             >
               {userProfile.picture ? (
                 <img
@@ -172,11 +190,12 @@ export default function DashboardLayout({ children }) {
               )}
             </button>
 
-            <div className={`pointer-events-none absolute bottom-full mb-2 w-60 rounded-xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl shadow-slate-200/70 transition-all group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100 ${collapsed ? 'left-full ml-3' : 'left-0'}`}>
+            <div className={`${profileMenuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'} absolute bottom-full mb-2 w-60 rounded-xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-200/70 transition-opacity ${collapsed ? 'left-full ml-3' : 'left-0'}`}>
               {profileMenuItems.map((item) => (
                 <Link
                   key={item.label}
                   to={item.to}
+                  onClick={() => setProfileMenuOpen(false)}
                   className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
                 >
                   <item.icon className="h-4 w-4 text-slate-400" />
@@ -185,6 +204,7 @@ export default function DashboardLayout({ children }) {
               ))}
               <Link
                 to="/"
+                onClick={() => setProfileMenuOpen(false)}
                 className="mt-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50"
               >
                 <LogOut className="h-4 w-4" />
