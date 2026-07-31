@@ -48,7 +48,7 @@ export default function AdminLayout({ children }) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex font-sans text-slate-900">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 xl:pl-[260px]">
       
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
@@ -60,8 +60,8 @@ export default function AdminLayout({ children }) {
 
       {/* Admin Sidebar */}
       <aside className={`
-        fixed left-0 top-0 bottom-0 xl:sticky xl:top-0 xl:bottom-auto z-50
-        h-screen shrink-0
+        fixed left-0 top-0 bottom-0 z-50
+        h-dvh min-h-screen shrink-0
         w-[260px] bg-slate-950 flex flex-col shadow-[14px_0_30px_-28px_rgba(15,23,42,0.85)]
         transition-transform duration-300 ease-in-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}
@@ -111,7 +111,7 @@ export default function AdminLayout({ children }) {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <main className="flex min-h-screen min-w-0 flex-col overflow-hidden">
         
         {/* Topbar */}
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 z-30">
