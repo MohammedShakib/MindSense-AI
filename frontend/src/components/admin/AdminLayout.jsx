@@ -8,6 +8,8 @@ import { Link, useLocation } from 'react-router-dom';
 import BrandIcon from '../BrandIcon';
 import { fetchDatabaseStatus } from '../../lib/api';
 
+let cachedDatabaseStatus = null;
+
 const AdminSidebarItem = ({ icon: Icon, label, to, active }) => {
   return (
     <Link
@@ -27,8 +29,8 @@ const AdminSidebarItem = ({ icon: Icon, label, to, active }) => {
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [databaseStatus, setDatabaseStatus] = useState({ connected: false, status: 'checking' });
-  const [statusLoading, setStatusLoading] = useState(true);
+  const [databaseStatus, setDatabaseStatus] = useState(cachedDatabaseStatus || { connected: false, status: 'checking' });
+  const [statusLoading, setStatusLoading] = useState(!cachedDatabaseStatus);
   const profileMenuRef = useRef(null);
   const location = useLocation();
 
@@ -61,14 +63,22 @@ export default function AdminLayout({ children }) {
     let cancelled = false;
 
     async function loadDatabaseStatus() {
+      if (cachedDatabaseStatus) {
+        setDatabaseStatus(cachedDatabaseStatus);
+        setStatusLoading(false);
+        return;
+      }
+
       try {
         const nextDatabaseStatus = await fetchDatabaseStatus();
+        cachedDatabaseStatus = nextDatabaseStatus;
         if (!cancelled) {
           setDatabaseStatus(nextDatabaseStatus);
         }
       } catch {
+        cachedDatabaseStatus = { connected: false, status: 'disconnected' };
         if (!cancelled) {
-          setDatabaseStatus({ connected: false, status: 'disconnected' });
+          setDatabaseStatus(cachedDatabaseStatus);
         }
       } finally {
         if (!cancelled) {

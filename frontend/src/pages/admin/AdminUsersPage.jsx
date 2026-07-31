@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import { fetchAdminUsers } from '../../lib/api';
 
+let cachedAdminUsers = null;
+
 function getDisplayName(user) {
   if (user.name) return user.name;
   if (!user.email) return 'Unnamed User';
@@ -60,15 +62,22 @@ function downloadUsersCsv(users) {
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
   const [query, setQuery] = useState('');
-  const [usersLoading, setUsersLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(!cachedAdminUsers);
   const [usersError, setUsersError] = useState('');
 
-  async function loadAdminData() {
+  async function loadAdminData({ force = false } = {}) {
+    if (!force && cachedAdminUsers) {
+      setUsers(cachedAdminUsers);
+      setUsersLoading(false);
+      return;
+    }
+
     setUsersLoading(true);
     setUsersError('');
 
     try {
       const nextUsers = await fetchAdminUsers();
+      cachedAdminUsers = nextUsers;
       setUsers(nextUsers);
     } catch (err) {
       setUsersError(err.message || 'Failed to load admin users');
@@ -78,6 +87,12 @@ export default function AdminUsersPage() {
   }
 
   useEffect(() => {
+    if (cachedAdminUsers) {
+      setUsers(cachedAdminUsers);
+      setUsersLoading(false);
+      return;
+    }
+
     loadAdminData();
   }, []);
 
@@ -121,7 +136,7 @@ export default function AdminUsersPage() {
           </div>
           <div className="flex w-full gap-2 sm:w-auto">
             <button
-              onClick={loadAdminData}
+              onClick={() => loadAdminData({ force: true })}
               className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
             >
               <RefreshCw className="h-4 w-4" />
