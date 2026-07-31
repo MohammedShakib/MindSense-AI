@@ -8,6 +8,7 @@ import AdminUsersPage from './pages/admin/AdminUsersPage';
 import AdminAssessmentsPage from './pages/admin/AdminAssessmentsPage';
 import AdminAIModulesPage from './pages/admin/AdminAIModulesPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
+import AdminComingSoonPage from './pages/admin/AdminComingSoonPage';
 
 function App() {
   return (
@@ -25,6 +26,13 @@ function App() {
         <Route path="/admin/users" element={<AdminUsersPage />} />
         <Route path="/admin/assessments" element={<AdminAssessmentsPage />} />
         <Route path="/admin/ai-modules" element={<AdminAIModulesPage />} />
+        <Route path="/admin/questionnaires" element={<AdminComingSoonPage title="Questionnaires" />} />
+        <Route path="/admin/content" element={<AdminComingSoonPage title="Wellness Content" />} />
+        <Route path="/admin/recommendations" element={<AdminComingSoonPage title="Recommendations" />} />
+        <Route path="/admin/reports" element={<AdminComingSoonPage title="Reports" />} />
+        <Route path="/admin/logs" element={<AdminComingSoonPage title="System Logs" />} />
+        <Route path="/admin/management" element={<AdminComingSoonPage title="Admin Management" />} />
+        <Route path="/admin/profile" element={<AdminComingSoonPage title="Admin Profile" />} />
         <Route path="/admin/settings" element={<AdminSettingsPage />} />
       </Routes>
     </Router>
