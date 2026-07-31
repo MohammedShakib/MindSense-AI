@@ -12,13 +12,13 @@ const AdminSidebarItem = ({ icon: Icon, label, to, active }) => {
   return (
     <Link
       to={to}
-      className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+      className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${
         active
           ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200'
-          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
       }`}
     >
-      <Icon className={`w-4 h-4 ${active ? 'text-white' : 'text-slate-400'}`} />
+      <Icon className={`w-4 h-4 ${active ? 'text-white' : 'text-slate-500'}`} />
       {label}
     </Link>
   );
@@ -113,8 +113,8 @@ export default function AdminLayout({ children }) {
           <Link to="/" className="flex min-w-0 items-center gap-3">
             <BrandIcon className="h-10 w-10 rounded-lg bg-white shadow-md shadow-indigo-100 ring-1 ring-slate-100" imageClassName="object-contain p-1" />
             <span className="min-w-0 leading-tight">
-              <span className="block truncate text-lg font-black tracking-tight text-slate-900">MindSense</span>
-              <span className="block text-[10px] font-black uppercase tracking-[0.22em] text-indigo-600">Admin</span>
+              <span className="block truncate text-lg font-black text-slate-950">MindSense</span>
+              <span className="block text-[10px] font-black uppercase tracking-wide text-indigo-600">Admin</span>
             </span>
           </Link>
         </div>
@@ -122,21 +122,21 @@ export default function AdminLayout({ children }) {
         {/* Nav Links */}
         <div className="flex-1 overflow-y-auto py-6 px-4 scrollbar-hide">
           <div className="space-y-1 mb-8">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-3">Core</div>
+            <div className="mb-3 px-4 text-[10px] font-black uppercase tracking-wide text-slate-500">Core</div>
             {mainNav.map((item) => (
               <AdminSidebarItem key={item.label} {...item} active={item.to === '/admin/overview' ? location.pathname === '/admin' || location.pathname === item.to : location.pathname.startsWith(item.to)} />
             ))}
           </div>
 
           <div className="space-y-1 mb-8">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-3">Content</div>
+            <div className="mb-3 px-4 text-[10px] font-black uppercase tracking-wide text-slate-500">Content</div>
             {contentNav.map((item) => (
               <AdminSidebarItem key={item.label} {...item} active={location.pathname.startsWith(item.to)} />
             ))}
           </div>
 
           <div className="space-y-1">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-3">System</div>
+            <div className="mb-3 px-4 text-[10px] font-black uppercase tracking-wide text-slate-500">System</div>
             {systemNav.map((item) => (
               <AdminSidebarItem key={item.label} {...item} active={location.pathname.startsWith(item.to)} />
             ))}
@@ -151,8 +151,8 @@ export default function AdminLayout({ children }) {
                   <Database className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Database</p>
-                  <p className="truncate text-sm font-black leading-none text-slate-800">{databaseStatusLabel}</p>
+                  <p className="truncate text-[10px] font-black uppercase tracking-wide text-slate-500">Database</p>
+                  <p className="truncate text-sm font-black leading-none text-slate-900">{databaseStatusLabel}</p>
                 </div>
               </div>
               <span className={`h-3 w-3 shrink-0 rounded-full ${isDatabaseConnected ? 'bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.15)]' : 'bg-rose-500 shadow-[0_0_0_4px_rgba(244,63,94,0.15)]'}`} />
@@ -166,8 +166,8 @@ export default function AdminLayout({ children }) {
                 A
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-black leading-none text-slate-800">Admin User</p>
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">Superadmin</p>
+                <p className="truncate text-sm font-black leading-none text-slate-900">Admin User</p>
+                <p className="mt-1 text-[10px] font-black uppercase tracking-wide text-slate-500">Superadmin</p>
               </div>
             </button>
 
