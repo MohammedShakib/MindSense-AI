@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   LayoutDashboard, Users, FileBarChart, BrainCircuit, 
   ListChecks, Heart, Star, BarChart2, Activity, 
-  ShieldCheck, Settings, LogOut, Menu, Bell, Search
+  ShieldCheck, Settings, LogOut, Menu, Bell, Search, Database
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import BrandIcon from '../BrandIcon';
+import { fetchDatabaseStatus } from '../../lib/api';
 
 const AdminSidebarItem = ({ icon: Icon, label, to, active }) => {
   return (
@@ -25,6 +26,8 @@ const AdminSidebarItem = ({ icon: Icon, label, to, active }) => {
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [databaseStatus, setDatabaseStatus] = useState({ connected: false, status: 'checking' });
+  const [statusLoading, setStatusLoading] = useState(true);
   const location = useLocation();
 
   const mainNav = [
@@ -51,6 +54,40 @@ export default function AdminLayout({ children }) {
     { label: "Admin Profile", to: "/admin/profile", icon: Users },
     { label: "Settings", to: "/admin/settings", icon: Settings },
   ];
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadDatabaseStatus() {
+      try {
+        const nextDatabaseStatus = await fetchDatabaseStatus();
+        if (!cancelled) {
+          setDatabaseStatus(nextDatabaseStatus);
+        }
+      } catch {
+        if (!cancelled) {
+          setDatabaseStatus({ connected: false, status: 'disconnected' });
+        }
+      } finally {
+        if (!cancelled) {
+          setStatusLoading(false);
+        }
+      }
+    }
+
+    loadDatabaseStatus();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const isDatabaseConnected = Boolean(databaseStatus.connected);
+  const databaseStatusLabel = statusLoading
+    ? 'Checking'
+    : isDatabaseConnected
+      ? 'Connected'
+      : 'Disconnected';
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 xl:pl-[260px]">
@@ -106,8 +143,23 @@ export default function AdminLayout({ children }) {
           </div>
         </div>
 
-        {/* Profile Menu */}
         <div className="border-t border-slate-100 bg-slate-50/70 p-4">
+          <div className="mb-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${isDatabaseConnected ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                  <Database className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Database</p>
+                  <p className="truncate text-sm font-black leading-none text-slate-800">{databaseStatusLabel}</p>
+                </div>
+              </div>
+              <span className={`h-3 w-3 shrink-0 rounded-full ${isDatabaseConnected ? 'bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.15)]' : 'bg-rose-500 shadow-[0_0_0_4px_rgba(244,63,94,0.15)]'}`} />
+            </div>
+          </div>
+
+          {/* Profile Menu */}
           <div className="group relative">
             <button className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white p-2 text-left shadow-sm transition-all hover:border-indigo-200 hover:shadow-md">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-900 text-sm font-black text-white">

@@ -2,14 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import {
   CheckCircle2,
-  Database,
   Filter,
   Mail,
   RefreshCw,
   Search,
   XCircle,
 } from 'lucide-react';
-import { fetchAdminUsers, fetchDatabaseStatus } from '../../lib/api';
+import { fetchAdminUsers } from '../../lib/api';
 
 function getDisplayName(user) {
   if (user.name) return user.name;
@@ -63,27 +62,18 @@ export default function AdminUsersPage() {
   const [query, setQuery] = useState('');
   const [usersLoading, setUsersLoading] = useState(true);
   const [usersError, setUsersError] = useState('');
-  const [databaseStatus, setDatabaseStatus] = useState({ connected: false, status: 'checking' });
-  const [statusLoading, setStatusLoading] = useState(true);
 
   async function loadAdminData() {
     setUsersLoading(true);
-    setStatusLoading(true);
     setUsersError('');
 
     try {
-      const [nextUsers, nextDatabaseStatus] = await Promise.all([
-        fetchAdminUsers(),
-        fetchDatabaseStatus(),
-      ]);
+      const nextUsers = await fetchAdminUsers();
       setUsers(nextUsers);
-      setDatabaseStatus(nextDatabaseStatus);
     } catch (err) {
       setUsersError(err.message || 'Failed to load admin users');
-      setDatabaseStatus({ connected: false, status: 'disconnected' });
     } finally {
       setUsersLoading(false);
-      setStatusLoading(false);
     }
   }
 
@@ -102,43 +92,19 @@ export default function AdminUsersPage() {
     });
   }, [query, users]);
 
-  const isDatabaseConnected = Boolean(databaseStatus.connected);
-  const statusLabel = statusLoading
-    ? 'Checking'
-    : isDatabaseConnected
-      ? 'Connected'
-      : 'Disconnected';
-
   return (
     <AdminLayout>
-      <div className="mb-6 grid gap-4 xl:grid-cols-[1fr_300px]">
-        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">Users Management</h1>
-            <p className="mt-1 text-sm text-slate-500">Manage platform users from the connected database.</p>
-          </div>
-          <button
-            onClick={() => downloadUsersCsv(filteredUsers)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
-          >
-            Export Users CSV
-          </button>
+      <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Users Management</h1>
+          <p className="mt-1 text-sm text-slate-500">Manage platform users from the connected database.</p>
         </div>
-
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${isDatabaseConnected ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-                <Database className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Database</p>
-                <p className="text-sm font-black text-slate-800">{statusLabel}</p>
-              </div>
-            </div>
-            <span className={`h-3 w-3 rounded-full ${isDatabaseConnected ? 'bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.15)]' : 'bg-rose-500 shadow-[0_0_0_4px_rgba(244,63,94,0.15)]'}`} />
-          </div>
-        </div>
+        <button
+          onClick={() => downloadUsersCsv(filteredUsers)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+        >
+          Export Users CSV
+        </button>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
