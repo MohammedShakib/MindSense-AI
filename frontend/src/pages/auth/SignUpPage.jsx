@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, User } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import BrandIcon from '../../components/BrandIcon';
+import GoogleLoadingOverlay from '../../components/auth/GoogleLoadingOverlay';
 import { useGoogleSignIn } from '../../hooks/useGoogleSignIn';
 import { registerUser } from '../../lib/api';
 import { saveUserProfile } from '../../lib/userProfile';
@@ -154,14 +155,15 @@ export default function SignUpPage() {
             <div className="h-px bg-slate-100 flex-1"></div>
           </div>
 
-          <div className="mt-6">
+          <div className="relative mt-6">
             {isGoogleConfigured ? (
-              <div className={googleLoading ? 'pointer-events-none opacity-70' : ''} ref={googleButtonRef} />
+              <div className={googleLoading ? 'pointer-events-none opacity-40' : ''} ref={googleButtonRef} />
             ) : (
               <div className="w-full rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
                 Google sign-in needs VITE_GOOGLE_CLIENT_ID.
               </div>
             )}
+            <GoogleLoadingOverlay loading={googleLoading} />
             {googleError && (
               <p className="mt-3 text-sm font-medium text-red-600">{googleError}</p>
             )}
