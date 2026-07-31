@@ -34,6 +34,7 @@ async def register_user(
         )
     
     user = User(
+        name=user_in.name,
         email=user_in.email,
         hashed_password=get_password_hash(user_in.password),
     )
@@ -171,7 +172,9 @@ async def google_auth(
         raise HTTPException(status_code=400, detail="Invalid Google token")
 
     email = payload.get("email")
+    name = payload.get("name")
     google_id = payload.get("sub")
+    profile_picture = payload.get("picture")
     email_verified = payload.get("email_verified")
 
     if not email or not google_id or not email_verified:
@@ -183,12 +186,18 @@ async def google_auth(
     if user:
         if not user.google_id:
             user.google_id = google_id
-            await db.commit()
-            await db.refresh(user)
+        if name and user.name != name:
+            user.name = name
+        if profile_picture and user.profile_picture != profile_picture:
+            user.profile_picture = profile_picture
+        await db.commit()
+        await db.refresh(user)
     else:
         user = User(
+            name=name,
             email=email,
             google_id=google_id,
+            profile_picture=profile_picture,
             hashed_password=None # OAuth users might not have a password
         )
         db.add(user)
@@ -201,4 +210,10 @@ async def google_auth(
             user.id, expires_delta=access_token_expires
         ),
         "token_type": "bearer",
+        "user": {
+            "id": str(user.id),
+            "name": user.name,
+            "email": user.email,
+            "profile_picture": user.profile_picture,
+        },
     }

@@ -7,6 +7,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import BrandIcon from '../BrandIcon';
+import { getInitials, getStoredUserProfile } from '../../lib/userProfile';
 
 const SidebarItem = ({ icon: Icon, label, to, active, collapsed }) => {
   return (
@@ -63,7 +64,9 @@ export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [userProfile] = useState(() => getStoredUserProfile());
   const location = useLocation();
+  const userInitials = getInitials(userProfile.name, userProfile.email);
 
   const assessItems = [
     { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
@@ -147,14 +150,23 @@ export default function DashboardLayout({ children }) {
           <div className={`group relative ${collapsed ? 'flex justify-center' : ''}`}>
             <button
               className={`flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white p-2 text-left shadow-sm transition-all hover:border-indigo-200 hover:shadow-md ${collapsed ? 'justify-center' : ''}`}
-              title={collapsed ? 'Sarah Jenkins' : undefined}
+              title={collapsed ? userProfile.name : undefined}
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 text-sm font-black text-indigo-700">
-                SJ
-              </div>
+              {userProfile.picture ? (
+                <img
+                  src={userProfile.picture}
+                  alt=""
+                  className="h-10 w-10 shrink-0 rounded-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 text-sm font-black text-indigo-700">
+                  {userInitials}
+                </div>
+              )}
               {!collapsed && (
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black leading-none text-slate-800">Sarah Jenkins</p>
+                  <p className="truncate text-sm font-black leading-none text-slate-800">{userProfile.name}</p>
                   <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">Premium</p>
                 </div>
               )}

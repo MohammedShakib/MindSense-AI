@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
@@ -7,7 +7,9 @@ import BrandIcon from '../../components/BrandIcon';
 import { useGoogleSignIn } from '../../hooks/useGoogleSignIn';
 
 export default function SignInPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [loginError, setLoginError] = useState('');
   const {
     buttonRef: googleButtonRef,
     error: googleError,
@@ -17,12 +19,18 @@ export default function SignInPage() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setLoginError('');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Implement login logic
-    console.log('Login attempt', formData);
+
+    if (formData.email.trim() === 'admin' && formData.password === 'admin') {
+      navigate('/admin');
+      return;
+    }
+
+    setLoginError('Use admin/admin to open the admin panel.');
   };
 
   return (
@@ -52,18 +60,19 @@ export default function SignInPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700 ml-1">Email Address</label>
+              <label className="text-sm font-semibold text-slate-700 ml-1">Username</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Mail className="w-5 h-5 text-slate-400" />
                 </div>
                 <input 
-                  type="email" 
+                  type="text" 
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-purple/30 focus:border-accent-purple/50 transition-all text-slate-900 placeholder:text-slate-400"
-                  placeholder="name@example.com"
+                  placeholder="admin"
+                  autoComplete="username"
                   required
                 />
               </div>
@@ -79,7 +88,8 @@ export default function SignInPage() {
                   <Lock className="w-5 h-5 text-slate-400" />
                 </div>
                 <input 
-                  type="password" 
+                  type="password"
+                  autoComplete="current-password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
@@ -93,6 +103,10 @@ export default function SignInPage() {
             <Button type="submit" variant="primary" className="w-full mt-2" size="lg">
               Sign In
             </Button>
+
+            {loginError && (
+              <p className="text-sm font-medium text-red-600">{loginError}</p>
+            )}
           </form>
 
           <div className="mt-6 flex items-center justify-between gap-3 sm:gap-4">

@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import BrandIcon from '../../components/BrandIcon';
 import { useGoogleSignIn } from '../../hooks/useGoogleSignIn';
+import { registerUser } from '../../lib/api';
+import { saveUserProfile } from '../../lib/userProfile';
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [signupError, setSignupError] = useState('');
+  const [signupLoading, setSignupLoading] = useState(false);
   const {
     buttonRef: googleButtonRef,
     error: googleError,
@@ -17,12 +22,27 @@ export default function SignUpPage() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setSignupError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement registration logic
-    console.log('Registration attempt', formData);
+    setSignupLoading(true);
+    setSignupError('');
+
+    try {
+      const user = await registerUser(formData);
+      saveUserProfile({
+        name: user.name,
+        email: user.email,
+        picture: user.profile_picture,
+      });
+      navigate('/dashboard');
+    } catch (err) {
+      setSignupError(err.message || 'Registration failed');
+    } finally {
+      setSignupLoading(false);
+    }
   };
 
   return (
@@ -119,9 +139,13 @@ export default function SignUpPage() {
               </label>
             </div>
 
-            <Button type="submit" variant="primary" className="w-full mt-2" size="lg">
-              Create Account
+            <Button type="submit" variant="primary" className="w-full mt-2" size="lg" disabled={signupLoading}>
+              {signupLoading ? 'Creating...' : 'Create Account'}
             </Button>
+
+            {signupError && (
+              <p className="text-sm font-medium text-red-600">{signupError}</p>
+            )}
           </form>
 
           <div className="mt-6 flex items-center justify-between gap-3 sm:gap-4">

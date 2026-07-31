@@ -7,14 +7,17 @@ class UserBase(BaseModel):
     email: EmailStr
 
 class UserCreate(UserBase):
+    name: Optional[str] = None
     password: str
 
 class UserResponse(UserBase):
     id: UUID
+    name: Optional[str] = None
     is_active: bool
     is_superuser: bool
     created_at: datetime
     google_id: Optional[str] = None
+    profile_picture: Optional[str] = None
 
     class Config:
         from_attributes = True

@@ -10,6 +10,7 @@ import {
   RecentAssessmentsWidget
 } from '../../components/dashboard/DashboardWidgets';
 import { Sparkles, Video, AlertCircle } from 'lucide-react';
+import { getStoredUserProfile } from '../../lib/userProfile';
 
 export const NextBestActionCard = () => {
   return (
@@ -37,6 +38,7 @@ export const NextBestActionCard = () => {
 export default function UserDashboardPage() {
   // Mock states for demonstrating robust UI handling
   const [isLoading] = useState(false);
+  const [userProfile] = useState(() => getStoredUserProfile());
   const hasError = false;
 
   return (
@@ -45,7 +47,7 @@ export default function UserDashboardPage() {
 
         {/* Welcome Section */}
         <div className="mb-2">
-          <h1 className="text-3xl font-black text-slate-800 tracking-tight">Welcome back, Sarah.</h1>
+          <h1 className="text-3xl font-black text-slate-800 tracking-tight">Welcome back, {userProfile.name}.</h1>
           <p className="text-slate-500 mt-1">Here is your multimodal wellness snapshot for today.</p>
         </div>
 

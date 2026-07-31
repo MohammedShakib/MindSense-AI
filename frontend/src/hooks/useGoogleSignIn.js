@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginWithGoogleToken } from '../lib/api';
+import { decodeGoogleCredential, saveUserProfile } from '../lib/userProfile';
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
@@ -58,8 +59,16 @@ export function useGoogleSignIn() {
             setLoading(true);
 
             try {
-              await loginWithGoogleToken(response.credential);
-              navigate('/assessment');
+              const data = await loginWithGoogleToken(response.credential);
+              const profile = data.user || decodeGoogleCredential(response.credential);
+              if (profile) {
+                saveUserProfile({
+                  name: profile.name,
+                  email: profile.email,
+                  picture: profile.profile_picture || profile.picture,
+                });
+              }
+              navigate('/dashboard');
             } catch (err) {
               setError(err.message || 'Google sign-in failed');
             } finally {
