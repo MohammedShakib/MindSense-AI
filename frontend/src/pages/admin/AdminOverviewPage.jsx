@@ -104,7 +104,7 @@ function buildChartData(range) {
 function AreaChart({ data, activeLines }) {
   const svgRef = useRef(null);
   const [tooltip, setTooltip] = useState(null);
-  const W = 600, H = 180, PL = 52, PR = 16, PT = 12, PB = 36;
+  const W = 600, H = 260, PL = 52, PR = 16, PT = 28, PB = 38;
   const iW = W - PL - PR, iH = H - PT - PB;
 
   const series = useMemo(() => {
@@ -198,7 +198,14 @@ function AreaChart({ data, activeLines }) {
 
       {/* Tooltip box */}
       {tooltip && (
-        <div className="chart-tooltip" style={{ left: `${(tooltip.x / W) * 100}%` }}>
+        <div
+          className="chart-tooltip"
+          style={{
+            left: tooltip.x < PL + 60 ? 0 : tooltip.x > W - PR - 60 ? 'auto' : `${(tooltip.x / W) * 100}%`,
+            right: tooltip.x > W - PR - 60 ? 0 : 'auto',
+            transform: tooltip.x < PL + 60 || tooltip.x > W - PR - 60 ? 'none' : 'translateX(-50%)',
+          }}
+        >
           <div className="chart-tooltip-label">{tooltip.label}</div>
           {tooltip.vals.map((s) => (
             <div key={s.key} className="chart-tooltip-row">
@@ -631,7 +638,7 @@ export default function AdminOverviewPage() {
         .ov-row1 { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
         @media (max-width: 1050px) { .ov-row1 { grid-template-columns: 1fr; } }
 
-        .chart-card { padding: 0; }
+        .chart-card { padding: 0; min-height: 390px; overflow: visible; }
         .chart-header { padding: 14px 18px; border-bottom: 1px solid #f8fafc; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
         .chart-toggles { display: flex; gap: 8px; }
         .chart-toggle {
@@ -640,11 +647,11 @@ export default function AdminOverviewPage() {
           cursor: pointer; transition: all .13s; background: #fff;
         }
         .chart-toggle-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .chart-body { padding: 16px 18px 12px; }
+        .chart-body { position: relative; flex: 1; padding: 18px 18px 14px; overflow: visible; }
 
         /* Tooltip */
         .chart-tooltip {
-          position: absolute; top: -90px; transform: translateX(-50%);
+          position: absolute; top: 8px; transform: translateX(-50%);
           background: #1e293b; border-radius: 10px; padding: 8px 12px;
           font-size: 12px; color: #fff; pointer-events: none; z-index: 10;
           box-shadow: 0 4px 16px rgba(15,23,42,.2); white-space: nowrap;
@@ -783,7 +790,7 @@ export default function AdminOverviewPage() {
                 })}
               </div>
             </div>
-            <div className="chart-body" style={{ position: 'relative' }}>
+            <div className="chart-body">
               <AreaChart data={chartData} activeLines={activeLines} />
             </div>
           </div>
