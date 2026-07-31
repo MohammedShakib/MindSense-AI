@@ -3,9 +3,12 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { 
   Activity, TrendingUp, Sparkles, PlusCircle, MessageSquare, 
   FileText, Download, CheckCircle2, Circle, Heart, Wind, 
-  Target, PlayCircle, Clock, ArrowRight, BrainCircuit
+  Target, Clock, ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+const cardBase = 'bg-white rounded-lg border border-slate-200 shadow-sm shadow-slate-200/70';
+const sectionTitle = 'text-xs font-black uppercase tracking-[0.18em] text-slate-700';
 
 // Utility for animating numbers
 export function AnimatedNumber({ value }) {
@@ -35,11 +38,11 @@ export function AnimatedNumber({ value }) {
 
 export const WellnessScoreWidget = () => {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 col-span-1 lg:col-span-2 flex flex-col md:flex-row items-center gap-8">
+    <div className={`${cardBase} col-span-1 lg:col-span-2 flex flex-col gap-7 p-6 xl:flex-row xl:items-center xl:p-7`}>
       
       {/* Gauge Side */}
-      <div className="flex-1 flex flex-col items-center justify-center relative">
-        <div className="text-sm font-bold text-slate-500 tracking-widest uppercase mb-6 text-center">Wellness Concern Score</div>
+      <div className="flex min-w-[260px] flex-1 flex-col items-center justify-center rounded-lg bg-slate-50 px-5 py-6">
+        <div className={sectionTitle}>Wellness Concern Score</div>
         <div className="relative w-48 h-48">
           <svg className="w-full h-full transform -rotate-90">
             <circle cx="96" cy="96" r="84" stroke="#f1f5f9" strokeWidth="16" fill="none" />
@@ -69,15 +72,15 @@ export const WellnessScoreWidget = () => {
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">/ 100</span>
           </div>
         </div>
-        <div className="mt-4 px-4 py-1.5 bg-rose-50 text-rose-600 rounded-full text-xs font-bold uppercase tracking-wider">
+        <div className="mt-4 px-4 py-1.5 bg-rose-50 text-rose-600 rounded-full text-xs font-bold uppercase tracking-wider ring-1 ring-rose-100">
           High Concern
         </div>
         <div className="text-xs text-slate-400 mt-3">Last assessment: Today, 9:41 AM</div>
       </div>
 
       {/* Signals Side */}
-      <div className="flex-1 w-full grid grid-cols-2 gap-4">
-        <div className="col-span-2 mb-2 text-center md:text-left">
+      <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="sm:col-span-2 mb-2 text-center md:text-left">
           <div className="text-sm font-bold text-slate-800">4 Signals → 1 Assessment</div>
           <div className="text-xs text-slate-500">AI fused multimodal analysis</div>
         </div>
@@ -88,7 +91,7 @@ export const WellnessScoreWidget = () => {
           { label: 'Facial', score: 70, color: 'text-purple-600', bg: 'bg-purple-50', bar: 'bg-purple-500' },
           { label: 'Voice', score: 76, color: 'text-cyan-600', bg: 'bg-cyan-50', bar: 'bg-cyan-500' }
         ].map(signal => (
-          <div key={signal.label} className={`p-4 rounded-xl border border-slate-100 ${signal.bg}`}>
+          <div key={signal.label} className={`p-4 rounded-lg border border-slate-100 ${signal.bg}`}>
             <div className={`text-xs font-bold uppercase tracking-wider mb-2 ${signal.color}`}>{signal.label}</div>
             <div className="flex items-end justify-between mb-2">
               <span className="text-2xl font-black text-slate-800 leading-none">{signal.score}</span>
@@ -111,10 +114,10 @@ export const WellnessScoreWidget = () => {
 
 export const TrendWidget = () => {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 col-span-1 flex flex-col">
-      <div className="flex justify-between items-start mb-6">
+    <div className={`${cardBase} col-span-1 flex min-h-[280px] flex-col p-6`}>
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
         <div>
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-1">Wellness Trend</h3>
+          <h3 className={sectionTitle}>Wellness Trend</h3>
           <p className="text-xs text-slate-500">Last 7 Assessments</p>
         </div>
         <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold">
@@ -122,7 +125,7 @@ export const TrendWidget = () => {
         </div>
       </div>
       
-      <div className="flex-1 w-full relative mt-4">
+      <div className="flex-1 w-full relative mt-4 min-h-[150px]">
         {/* Simple mock chart */}
         <div className="absolute inset-0 flex flex-col justify-between pb-6">
           <div className="border-b border-slate-100 w-full flex-1"></div>
@@ -148,12 +151,10 @@ export const TrendWidget = () => {
 
 export const AIInsightWidget = () => {
   return (
-    <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl p-6 shadow-lg col-span-1 text-white relative overflow-hidden flex flex-col">
-      <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/20 rounded-full blur-[40px] -mr-10 -mt-10"></div>
-      
+    <div className="col-span-1 flex flex-col overflow-hidden rounded-lg border border-indigo-800 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 p-6 text-white shadow-lg shadow-slate-300/60">
       <div className="flex items-center gap-2 mb-4 relative z-10">
         <Sparkles className="w-5 h-5 text-purple-400" />
-        <h3 className="text-sm font-bold uppercase tracking-widest text-slate-200">Wellness Insight</h3>
+        <h3 className="text-xs font-black uppercase tracking-[0.18em] text-slate-200">Wellness Insight</h3>
       </div>
       
       <p className="text-sm leading-relaxed text-slate-300 relative z-10 mb-6 flex-1">
@@ -162,7 +163,7 @@ export const AIInsightWidget = () => {
         We recommend a 5-minute breathing reset before your next deep-work session.
       </p>
 
-      <button className="relative z-10 w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl py-3 text-sm font-semibold transition-colors flex justify-center items-center gap-2">
+      <button className="relative z-10 w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-lg py-3 text-sm font-semibold transition-colors flex justify-center items-center gap-2">
         View Full Assessment <ArrowRight className="w-4 h-4" />
       </button>
     </div>
@@ -180,8 +181,8 @@ export const ProgressWidget = () => {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 col-span-1 lg:col-span-3">
       {stats.map((stat, i) => (
-        <div key={i} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color}`}>
+        <div key={i} className={`${cardBase} flex min-h-[104px] items-center gap-4 p-5`}>
+          <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}>
             <stat.icon className="w-6 h-6" />
           </div>
           <div>
@@ -195,26 +196,27 @@ export const ProgressWidget = () => {
 };
 
 export const QuickActionsWidget = () => {
+  const actions = [
+    { label: 'Start New Assessment', to: '/dashboard/new', icon: PlusCircle, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
+    { label: 'MindSense Companion', to: '/dashboard/companion', icon: MessageSquare, color: 'text-purple-600 bg-purple-50 border-purple-100' },
+    { label: 'View Wellness Plan', to: '/dashboard/tasks', icon: FileText, color: 'text-blue-600 bg-blue-50 border-blue-100' },
+    { label: 'Download Report', to: '/dashboard/reports', icon: Download, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
+  ];
+
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm col-span-1 lg:col-span-2">
-      <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Quick Actions</h3>
+    <div className={`${cardBase} col-span-1 p-6 lg:col-span-2`}>
+      <h3 className={`${sectionTitle} mb-4`}>Quick Actions</h3>
       <div className="grid grid-cols-2 gap-3">
-        <button className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border-2 border-dashed border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 transition-colors group">
-          <PlusCircle className="w-8 h-8 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-semibold text-center">Start New<br/>Assessment</span>
-        </button>
-        <button className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-purple-500 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors group">
-          <MessageSquare className="w-8 h-8 text-purple-500 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-semibold text-center">MindSense<br/>Companion</span>
-        </button>
-        <button className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-700 transition-colors group">
-          <FileText className="w-8 h-8 text-blue-500 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-semibold text-center">View Wellness<br/>Plan</span>
-        </button>
-        <button className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 transition-colors group">
-          <Download className="w-8 h-8 text-emerald-500 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-semibold text-center">Download<br/>Report</span>
-        </button>
+        {actions.map((action) => (
+          <Link
+            key={action.label}
+            to={action.to}
+            className={`group flex min-h-[118px] flex-col items-center justify-center gap-3 rounded-lg border p-4 text-center transition-all hover:-translate-y-0.5 hover:shadow-md ${action.color}`}
+          >
+            <action.icon className="w-8 h-8 transition-transform group-hover:scale-110" />
+            <span className="max-w-[9rem] text-sm font-black leading-tight text-slate-800">{action.label}</span>
+          </Link>
+        ))}
       </div>
     </div>
   );
@@ -222,9 +224,9 @@ export const QuickActionsWidget = () => {
 
 export const TasksWidget = () => {
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm col-span-1 flex flex-col">
+    <div className={`${cardBase} col-span-1 flex flex-col p-6`}>
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Today's Tasks</h3>
+        <h3 className={sectionTitle}>Today's Tasks</h3>
         <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md">2/4 Done</span>
       </div>
       <div className="space-y-3 flex-1">
@@ -234,7 +236,7 @@ export const TasksWidget = () => {
           { label: "Afternoon voice check-in", done: false },
           { label: "Review weekly wellness report", done: false },
         ].map((task, i) => (
-          <div key={i} className={`flex items-start gap-3 p-3 rounded-xl border ${task.done ? 'bg-slate-50 border-transparent' : 'bg-white border-slate-200'}`}>
+          <div key={i} className={`flex items-start gap-3 p-3 rounded-lg border ${task.done ? 'bg-slate-50 border-transparent' : 'bg-white border-slate-200'}`}>
             <button className="mt-0.5 text-slate-400 hover:text-indigo-600 transition-colors">
               {task.done ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <Circle className="w-5 h-5" />}
             </button>
@@ -250,9 +252,9 @@ export const TasksWidget = () => {
 
 export const MindfulnessWidget = () => {
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm col-span-1 lg:col-span-3">
+    <div className={`${cardBase} col-span-1 p-6 lg:col-span-3`}>
       <div className="flex justify-between items-center mb-5">
-        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Mindfulness Quick Access</h3>
+        <h3 className={sectionTitle}>Mindfulness Quick Access</h3>
         <Link to="/dashboard/mindfulness" className="text-xs font-bold text-indigo-600 hover:text-indigo-800">View All →</Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -261,7 +263,7 @@ export const MindfulnessWidget = () => {
           { title: "Stress Relief", duration: "10 min", type: "Meditation", icon: Heart, color: "bg-rose-50 text-rose-600 border-rose-100" },
           { title: "Evening Wind Down", duration: "15 min", type: "Guided", icon: Clock, color: "bg-indigo-50 text-indigo-600 border-indigo-100" },
         ].map((item, i) => (
-          <div key={i} className={`p-4 rounded-xl border ${item.color} flex flex-col justify-between hover:scale-[1.02] transition-transform cursor-pointer shadow-sm hover:shadow-md`}>
+          <div key={i} className={`p-4 rounded-lg border ${item.color} flex flex-col justify-between hover:scale-[1.02] transition-transform cursor-pointer shadow-sm hover:shadow-md`}>
             <div className="flex justify-between items-start mb-4">
               <div className="w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center mix-blend-multiply">
                 <item.icon className="w-5 h-5" />
@@ -281,9 +283,9 @@ export const MindfulnessWidget = () => {
 
 export const RecentAssessmentsWidget = () => {
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm col-span-1 lg:col-span-3 overflow-hidden">
+    <div className={`${cardBase} col-span-1 overflow-hidden p-6 lg:col-span-3`}>
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Recent Assessments</h3>
+        <h3 className={sectionTitle}>Recent Assessments</h3>
         <Link to="/dashboard/history" className="text-xs font-bold text-indigo-600 hover:text-indigo-800">View History →</Link>
       </div>
       <div className="overflow-x-auto">
