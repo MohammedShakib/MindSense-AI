@@ -83,17 +83,33 @@ function mockSeries(base, len, variance = 0.15) {
 
 const RANGE_POINTS = { '1d': 24, '7d': 7, '30d': 30, '3m': 12 };
 
-const RANGE_LABELS = {
-  '1d': Array.from({ length: 24 }, (_, i) => `${i}:00`),
-  '7d': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  '30d': Array.from({ length: 30 }, (_, i) => `D${i + 1}`),
-  '3m': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].slice(0, 12),
-};
+function buildDateLabels(range) {
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric' });
+
+  if (range === '1d') {
+    return Array.from({ length: 24 }, (_, i) => `${i}:00`);
+  }
+
+  if (range === '3m') {
+    return Array.from({ length: 12 }, (_, i) => {
+      const date = new Date(now.getFullYear(), now.getMonth() - 11 + i, 1);
+      return new Intl.DateTimeFormat('en', { month: 'short' }).format(date);
+    });
+  }
+
+  const days = RANGE_POINTS[range];
+  return Array.from({ length: days }, (_, i) => {
+    const date = new Date(now);
+    date.setDate(now.getDate() - (days - 1 - i));
+    return formatter.format(date);
+  });
+}
 
 function buildChartData(range) {
   const n = RANGE_POINTS[range];
   return {
-    labels: RANGE_LABELS[range].slice(0, n),
+    labels: buildDateLabels(range).slice(0, n),
     users: mockSeries(8000, n, 0.08),
     activeUsers: mockSeries(5200, n, 0.10),
     assessments: mockSeries(1100, n, 0.18),
@@ -104,7 +120,7 @@ function buildChartData(range) {
 function AreaChart({ data, activeLines }) {
   const svgRef = useRef(null);
   const [tooltip, setTooltip] = useState(null);
-  const W = 600, H = 190, PL = 52, PR = 16, PT = 28, PB = 36;
+  const W = 600, H = 160, PL = 52, PR = 16, PT = 24, PB = 32;
   const iW = W - PL - PR, iH = H - PT - PB;
 
   const series = useMemo(() => {
@@ -639,7 +655,7 @@ export default function AdminOverviewPage() {
         @media (max-width: 1050px) { .ov-row1 { grid-template-columns: 1fr; } }
 
         .chart-card { padding: 0; overflow: visible; }
-        .chart-header { padding: 14px 18px; border-bottom: 1px solid #f8fafc; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+        .chart-header { padding: 12px 18px; border-bottom: 1px solid #f8fafc; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
         .chart-toggles { display: flex; gap: 8px; }
         .chart-toggle {
           display: flex; align-items: center; gap: 5px; padding: 4px 10px;
@@ -647,7 +663,7 @@ export default function AdminOverviewPage() {
           cursor: pointer; transition: all .13s; background: #fff;
         }
         .chart-toggle-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .chart-body { position: relative; flex: 1; padding: 18px 18px 14px; overflow: visible; }
+        .chart-body { position: relative; flex: 1; padding: 12px 18px 10px; overflow: visible; }
 
         /* Tooltip */
         .chart-tooltip {
