@@ -130,10 +130,13 @@ export default function AdminLayout({ children }) {
                   {item.label}
                 </Link>
               ))}
-              <button className="mt-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50">
+              <Link
+                to="/"
+                className="mt-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50"
+              >
                 <LogOut className="h-4 w-4" />
                 Sign out
-              </button>
+              </Link>
             </div>
           </div>
         </div>
