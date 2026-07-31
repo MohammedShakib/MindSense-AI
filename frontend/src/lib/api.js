@@ -36,3 +36,25 @@ export async function registerUser({ name, email, password }) {
 
   return data;
 }
+
+export async function fetchAdminUsers() {
+  const response = await fetch(`${API_BASE_URL}/api/admin/users`);
+  const data = await response.json().catch(() => []);
+
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to load users');
+  }
+
+  return data;
+}
+
+export async function fetchDatabaseStatus() {
+  const response = await fetch(`${API_BASE_URL}/api/admin/database-status`);
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to check database connection');
+  }
+
+  return data;
+}
