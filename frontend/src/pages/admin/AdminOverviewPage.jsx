@@ -104,7 +104,7 @@ function buildChartData(range) {
 function AreaChart({ data, activeLines }) {
   const svgRef = useRef(null);
   const [tooltip, setTooltip] = useState(null);
-  const W = 600, H = 260, PL = 52, PR = 16, PT = 28, PB = 38;
+  const W = 600, H = 190, PL = 52, PR = 16, PT = 28, PB = 36;
   const iW = W - PL - PR, iH = H - PT - PB;
 
   const series = useMemo(() => {
@@ -638,7 +638,7 @@ export default function AdminOverviewPage() {
         .ov-row1 { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
         @media (max-width: 1050px) { .ov-row1 { grid-template-columns: 1fr; } }
 
-        .chart-card { padding: 0; min-height: 390px; overflow: visible; }
+        .chart-card { padding: 0; overflow: visible; }
         .chart-header { padding: 14px 18px; border-bottom: 1px solid #f8fafc; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
         .chart-toggles { display: flex; gap: 8px; }
         .chart-toggle {
