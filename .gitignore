@@ -25,6 +25,10 @@ env/
 .env.*
 !.env.example
 
+# Local ML artifacts and datasets
+Facial_Emotion_Recognition/
+Mental_Risk_Assessment/
+
 # Editor and OS files
 .vscode/*
 !.vscode/extensions.json

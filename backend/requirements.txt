@@ -12,7 +12,11 @@ requests
 passlib[bcrypt]
 python-jose[cryptography]
 python-multipart
+joblib
+numpy
+pillow
 scikit-learn
+tensorflow==2.15.0
 torch
 transformers
 opencv-python-headless

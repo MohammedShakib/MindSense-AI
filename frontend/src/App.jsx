@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import AssessmentWorkspace from './pages/AssessmentWorkspace';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import UserDashboardPage from './pages/dashboard/UserDashboardPage';
@@ -14,7 +15,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<AssessmentWorkspace />} />
+        <Route path="/landing" element={<LandingPage />} />
         <Route path="/login" element={<SignInPage />} />
         <Route path="/register" element={<SignUpPage />} />
         <Route path="/dashboard/*" element={<UserDashboardPage />} />

@@ -58,3 +58,44 @@ export async function fetchDatabaseStatus() {
 
   return data;
 }
+
+async function postJson(path, payload) {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.detail || 'Request failed');
+  }
+
+  return data;
+}
+
+export async function fetchMentalOptions() {
+  const response = await fetch(`${API_BASE_URL}/api/ml/mental-risk/options`);
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to load assessment options');
+  }
+
+  return data;
+}
+
+export function predictMentalRisk(payload) {
+  return postJson('/api/ml/mental-risk', payload);
+}
+
+export function predictFacialEmotion(image) {
+  return postJson('/api/ml/facial-emotion', { image });
+}
+
+export function buildFinalAssessment(payload) {
+  return postJson('/api/ml/final-assessment', payload);
+}
