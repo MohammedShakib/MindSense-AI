@@ -5,9 +5,10 @@ import {
   ShieldCheck, Settings, LogOut, Menu, Bell, Search, Database,
   ChevronDown, Zap
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import BrandIcon from '../BrandIcon';
-import { fetchDatabaseStatus } from '../../lib/api';
+import { clearAuthToken, fetchDatabaseStatus } from '../../lib/api';
+import { clearUserProfile, getInitials, getStoredUserProfile } from '../../lib/userProfile';
 
 let cachedDatabaseStatus = null;
 
@@ -28,8 +29,11 @@ export default function AdminLayout({ children }) {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [databaseStatus, setDatabaseStatus] = useState(cachedDatabaseStatus || { connected: false, status: 'checking' });
   const [statusLoading, setStatusLoading] = useState(!cachedDatabaseStatus);
+  const [userProfile] = useState(() => getStoredUserProfile());
   const profileMenuRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const adminInitials = getInitials(userProfile.name, userProfile.email);
 
   const mainNav = [
     { label: "Overview", to: "/admin/overview", icon: LayoutDashboard },
@@ -103,6 +107,13 @@ export default function AdminLayout({ children }) {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [profileMenuOpen]);
+
+  const handleLogout = () => {
+    clearAuthToken();
+    clearUserProfile();
+    setProfileMenuOpen(false);
+    navigate('/login', { replace: true });
+  };
 
   const isDatabaseConnected = Boolean(databaseStatus.connected);
   const databaseStatusLabel = statusLoading
@@ -229,6 +240,8 @@ export default function AdminLayout({ children }) {
           display: flex; align-items: center; gap: 9px;
           padding: 10px 14px; font-size: 13px; font-weight: 600;
           color: #475569; text-decoration: none; transition: background .1s;
+          border: 0; background: transparent; width: 100%; cursor: pointer;
+          font-family: inherit; text-align: left;
         }
         .sidebar-menu-item:hover { background: #f8fafc; color: #1e293b; }
         .sidebar-menu-item-danger { color: #dc2626; }
@@ -402,14 +415,14 @@ export default function AdminLayout({ children }) {
                 </Link>
               ))}
               <div className="sidebar-menu-divider" />
-              <Link
-                to="/"
-                onClick={() => setProfileMenuOpen(false)}
+              <button
+                type="button"
+                onClick={handleLogout}
                 className="sidebar-menu-item sidebar-menu-item-danger"
               >
                 <LogOut size={15} />
                 Sign out
-              </Link>
+              </button>
             </div>
 
             <button
@@ -417,9 +430,9 @@ export default function AdminLayout({ children }) {
               className="sidebar-profile-btn"
               aria-expanded={profileMenuOpen}
             >
-              <div className="sidebar-avatar">A</div>
+              <div className="sidebar-avatar">{adminInitials}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <span className="sidebar-profile-name">Admin User</span>
+                <span className="sidebar-profile-name">{userProfile.name}</span>
                 <span className="sidebar-profile-role">Superadmin</span>
               </div>
               <ChevronDown
@@ -470,9 +483,9 @@ export default function AdminLayout({ children }) {
 
             {/* Admin profile pill */}
             <button className="topbar-admin-pill">
-              <div className="topbar-admin-avatar">A</div>
+              <div className="topbar-admin-avatar">{adminInitials}</div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
-                <span className="topbar-admin-name">Admin User</span>
+                <span className="topbar-admin-name">{userProfile.name}</span>
               </div>
               <span className="topbar-admin-role">SUPERADMIN</span>
             </button>

@@ -50,6 +50,10 @@ export function saveUserProfile(profile) {
   return nextProfile;
 }
 
+export function clearUserProfile() {
+  localStorage.removeItem(USER_PROFILE_KEY);
+}
+
 export function decodeGoogleCredential(credential) {
   const payload = credential?.split('.')[1];
   if (!payload) return null;

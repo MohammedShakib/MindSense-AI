@@ -6,11 +6,14 @@ import { Button } from '../../components/ui/Button';
 import BrandIcon from '../../components/BrandIcon';
 import { useGoogleSignIn } from '../../hooks/useGoogleSignIn';
 import GoogleLoadingOverlay from '../../components/auth/GoogleLoadingOverlay';
+import { loginWithPassword } from '../../lib/api';
+import { saveUserProfile } from '../../lib/userProfile';
 
 export default function SignInPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loginError, setLoginError] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
   const {
     buttonRef: googleButtonRef,
     error: googleError,
@@ -23,15 +26,24 @@ export default function SignInPage() {
     setLoginError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoginError('');
+    setLoginLoading(true);
 
-    if (formData.email.trim() === 'admin' && formData.password === 'admin') {
-      navigate('/admin');
-      return;
+    try {
+      const data = await loginWithPassword(formData);
+      saveUserProfile({
+        name: data.user.name,
+        email: data.user.email,
+        picture: data.user.profile_picture,
+      });
+      navigate(data.user.is_superuser ? '/admin' : '/dashboard');
+    } catch (err) {
+      setLoginError(err.message || 'Sign in failed');
+    } finally {
+      setLoginLoading(false);
     }
-
-    setLoginError('Use admin/admin to open the admin panel.');
   };
 
   return (
@@ -61,18 +73,18 @@ export default function SignInPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700 ml-1">Username</label>
+              <label className="text-sm font-semibold text-slate-700 ml-1">Email Address</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Mail className="w-5 h-5 text-slate-400" />
                 </div>
                 <input 
-                  type="text" 
+                  type="email" 
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-purple/30 focus:border-accent-purple/50 transition-all text-slate-900 placeholder:text-slate-400"
-                  placeholder="admin"
+                  placeholder="name@example.com"
                   autoComplete="username"
                   required
                 />
@@ -101,8 +113,8 @@ export default function SignInPage() {
               </div>
             </div>
 
-            <Button type="submit" variant="primary" className="w-full mt-2" size="lg">
-              Sign In
+            <Button type="submit" variant="primary" className="w-full mt-2" size="lg" disabled={loginLoading}>
+              {loginLoading ? 'Signing in...' : 'Sign In'}
             </Button>
 
             {loginError && (

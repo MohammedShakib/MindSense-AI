@@ -4,10 +4,11 @@ import {
   CheckSquare, Heart, Video, FileText, User, Settings,
   LogOut, Menu, Bell, Search, ChevronLeft, ChevronRight
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import BrandIcon from '../BrandIcon';
-import { getInitials, getStoredUserProfile } from '../../lib/userProfile';
+import { clearAuthToken } from '../../lib/api';
+import { clearUserProfile, getInitials, getStoredUserProfile } from '../../lib/userProfile';
 
 const SidebarItem = ({ icon: Icon, label, to, active, collapsed }) => {
   return (
@@ -68,6 +69,7 @@ export default function DashboardLayout({ children }) {
   const [userProfile] = useState(() => getStoredUserProfile());
   const profileMenuRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const userInitials = getInitials(userProfile.name, userProfile.email);
 
   const assessItems = [
@@ -108,6 +110,13 @@ export default function DashboardLayout({ children }) {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [profileMenuOpen]);
+
+  const handleLogout = () => {
+    clearAuthToken();
+    clearUserProfile();
+    setProfileMenuOpen(false);
+    navigate('/login', { replace: true });
+  };
 
   return (
     <div className={`min-h-screen bg-[#F4F7FB] font-sans text-slate-900 transition-[padding] duration-300 ease-in-out ${collapsed ? 'lg:pl-[80px]' : 'lg:pl-[280px]'}`}>
@@ -202,14 +211,14 @@ export default function DashboardLayout({ children }) {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                to="/"
-                onClick={() => setProfileMenuOpen(false)}
+              <button
+                type="button"
+                onClick={handleLogout}
                 className="mt-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50"
               >
                 <LogOut className="h-4 w-4" />
                 Log out
-              </Link>
+              </button>
             </div>
           </div>
         </div>

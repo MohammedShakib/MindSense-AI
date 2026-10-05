@@ -1,4 +1,62 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const TOKEN_KEY = 'mindsense_token';
+
+export function getAuthToken() {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function setAuthToken(token) {
+  if (token) {
+    localStorage.setItem(TOKEN_KEY, token);
+  }
+}
+
+export function clearAuthToken() {
+  localStorage.removeItem(TOKEN_KEY);
+}
+
+function authHeaders(headers = {}) {
+  const token = getAuthToken();
+  return token ? { ...headers, Authorization: `Bearer ${token}` } : headers;
+}
+
+async function parseResponse(response, fallback) {
+  const data = await response.json().catch(() => fallback);
+
+  if (!response.ok) {
+    throw new Error(data.detail || 'Request failed');
+  }
+
+  return data;
+}
+
+export async function loginWithPassword({ email, password }) {
+  const body = new URLSearchParams();
+  body.set('username', email);
+  body.set('password', password);
+
+  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+  });
+
+  const tokenData = await parseResponse(response, {});
+  setAuthToken(tokenData.access_token);
+  const user = await fetchCurrentUser();
+
+  return { ...tokenData, user };
+}
+
+export async function fetchCurrentUser() {
+  const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+    headers: authHeaders(),
+  });
+
+  return parseResponse(response, {});
+}
 
 export async function loginWithGoogleToken(credential) {
   const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
@@ -15,7 +73,7 @@ export async function loginWithGoogleToken(credential) {
     throw new Error(data.detail || 'Google sign-in failed');
   }
 
-  localStorage.setItem('mindsense_token', data.access_token);
+  setAuthToken(data.access_token);
   return data;
 }
 
@@ -38,7 +96,9 @@ export async function registerUser({ name, email, password }) {
 }
 
 export async function fetchAdminUsers() {
-  const response = await fetch(`${API_BASE_URL}/api/admin/users`);
+  const response = await fetch(`${API_BASE_URL}/api/admin/users`, {
+    headers: authHeaders(),
+  });
   const data = await response.json().catch(() => []);
 
   if (!response.ok) {
@@ -49,7 +109,9 @@ export async function fetchAdminUsers() {
 }
 
 export async function fetchDatabaseStatus() {
-  const response = await fetch(`${API_BASE_URL}/api/admin/database-status`);
+  const response = await fetch(`${API_BASE_URL}/api/admin/database-status`, {
+    headers: authHeaders(),
+  });
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
@@ -62,9 +124,9 @@ export async function fetchDatabaseStatus() {
 async function postJson(path, payload) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: 'POST',
-    headers: {
+    headers: authHeaders({
       'Content-Type': 'application/json',
-    },
+    }),
     body: JSON.stringify(payload),
   });
 

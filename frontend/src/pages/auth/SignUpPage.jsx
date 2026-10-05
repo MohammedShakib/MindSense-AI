@@ -6,7 +6,7 @@ import { Button } from '../../components/ui/Button';
 import BrandIcon from '../../components/BrandIcon';
 import GoogleLoadingOverlay from '../../components/auth/GoogleLoadingOverlay';
 import { useGoogleSignIn } from '../../hooks/useGoogleSignIn';
-import { registerUser } from '../../lib/api';
+import { loginWithPassword, registerUser } from '../../lib/api';
 import { saveUserProfile } from '../../lib/userProfile';
 
 export default function SignUpPage() {
@@ -32,11 +32,15 @@ export default function SignUpPage() {
     setSignupError('');
 
     try {
-      const user = await registerUser(formData);
+      await registerUser(formData);
+      const data = await loginWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
       saveUserProfile({
-        name: user.name,
-        email: user.email,
-        picture: user.profile_picture,
+        name: data.user.name,
+        email: data.user.email,
+        picture: data.user.profile_picture,
       });
       navigate('/dashboard');
     } catch (err) {
