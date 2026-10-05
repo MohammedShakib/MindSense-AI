@@ -158,6 +158,14 @@ export function predictFacialEmotion(image) {
   return postJson('/api/ml/facial-emotion', { image });
 }
 
+export function predictTextEmotion(text) {
+  return postJson('/api/ml/text-emotion', { text });
+}
+
+export function predictVoiceEmotion(payload) {
+  return postJson('/api/ml/voice-emotion', payload);
+}
+
 export function buildFinalAssessment(payload) {
   return postJson('/api/ml/final-assessment', payload);
 }

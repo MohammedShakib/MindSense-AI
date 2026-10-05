@@ -129,6 +129,8 @@ export function CurrentAssessmentWidget({ latest }) {
   const payload = modalitiesPayload(latest);
   const mental = payload.mental;
   const facial = payload.facial;
+  const text = payload.text;
+  const voice = payload.voice;
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] lg:col-span-2">
@@ -163,8 +165,22 @@ export function CurrentAssessmentWidget({ latest }) {
           available={hasModality(latest, 'facial')}
           color="purple"
         />
-        <SignalCard icon={FileText} label="Text" value="Not added" available={false} color="blue" />
-        <SignalCard icon={Mic} label="Voice" value="Not added" available={false} color="cyan" />
+        <SignalCard
+          icon={FileText}
+          label="Text"
+          value={text?.label || 'Not added'}
+          confidence={latest.text_confidence}
+          available={hasModality(latest, 'text')}
+          color="blue"
+        />
+        <SignalCard
+          icon={Mic}
+          label="Voice"
+          value={voice?.label || 'Not added'}
+          confidence={latest.voice_confidence}
+          available={hasModality(latest, 'voice')}
+          color="cyan"
+        />
       </div>
     </div>
   );

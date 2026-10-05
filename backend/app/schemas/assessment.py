@@ -14,6 +14,8 @@ class AssessmentSignal(BaseModel):
 class AssessmentCreate(BaseModel):
     mental: AssessmentSignal | None = None
     facial: AssessmentSignal | None = None
+    text: AssessmentSignal | None = None
+    voice: AssessmentSignal | None = None
     final_score: float = Field(ge=0, le=100)
     overall_confidence: float | None = Field(default=None, ge=0, le=100)
     risk_level: str

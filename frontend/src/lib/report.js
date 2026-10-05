@@ -18,10 +18,12 @@ function modalitiesPayload(assessment) {
   return payload || {};
 }
 
-export function assessmentToReportData({ assessment, mentalResult, faceResult, finalResult }) {
+export function assessmentToReportData({ assessment, mentalResult, faceResult, textResult, voiceResult, finalResult }) {
   const payload = modalitiesPayload(assessment);
   const mental = mentalResult || payload.mental;
   const facial = faceResult || payload.facial;
+  const text = textResult || payload.text;
+  const voice = voiceResult || payload.voice;
 
   return {
     id: assessment?.id || 'Unsaved assessment',
@@ -34,6 +36,10 @@ export function assessmentToReportData({ assessment, mentalResult, faceResult, f
     mentalConfidence: mental?.confidence ?? assessment?.behavioural_confidence ?? 0,
     facialLabel: facial?.label || 'Not available',
     facialConfidence: facial?.confidence ?? assessment?.facial_confidence ?? 0,
+    textLabel: text?.label || 'Not available',
+    textConfidence: text?.confidence ?? assessment?.text_confidence ?? 0,
+    voiceLabel: voice?.label || 'Not available',
+    voiceConfidence: voice?.confidence ?? assessment?.voice_confidence ?? 0,
   };
 }
 
@@ -103,8 +109,8 @@ export function openAssessmentReport(data) {
             <tbody>
               <tr><td>Behavioural</td><td>${escapeHtml(report.mentalLabel)}</td><td>${escapeHtml(report.mentalConfidence)}%</td></tr>
               <tr><td>Facial</td><td>${escapeHtml(report.facialLabel)}</td><td>${escapeHtml(report.facialConfidence)}%</td></tr>
-              <tr><td>Text</td><td>Not added in this phase</td><td>-</td></tr>
-              <tr><td>Voice</td><td>Not added in this phase</td><td>-</td></tr>
+              <tr><td>Text</td><td>${escapeHtml(report.textLabel)}</td><td>${escapeHtml(report.textConfidence)}%</td></tr>
+              <tr><td>Voice</td><td>${escapeHtml(report.voiceLabel)}</td><td>${escapeHtml(report.voiceConfidence)}%</td></tr>
             </tbody>
           </table>
         </div>

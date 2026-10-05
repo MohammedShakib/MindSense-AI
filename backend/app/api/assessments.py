@@ -24,6 +24,20 @@ FACE_SCORE = {
     "Angry": 78,
     "Disgust": 72,
 }
+TEXT_SCORE = {
+    "Positive": 20,
+    "Calm": 24,
+    "Neutral": 42,
+    "Tired": 58,
+    "Stressed": 72,
+    "Negative": 76,
+}
+VOICE_SCORE = {
+    "Calm": 24,
+    "Neutral": 42,
+    "Tired": 58,
+    "Stressed": 72,
+}
 
 
 def label_score(label: str | None, score_map: dict[str, int]) -> float | None:
@@ -37,6 +51,8 @@ def build_modalities_payload(payload: AssessmentCreate) -> dict[str, Any]:
         "used": payload.modalities_used,
         "mental": payload.mental.model_dump() if payload.mental else None,
         "facial": payload.facial.model_dump() if payload.facial else None,
+        "text": payload.text.model_dump() if payload.text else None,
+        "voice": payload.voice.model_dump() if payload.voice else None,
         "recommendation": payload.recommendation,
     }
 
@@ -51,8 +67,12 @@ async def create_assessment(
         user_id=current_user.id,
         behavioural_score=label_score(payload.mental.label if payload.mental else None, RISK_SCORE),
         behavioural_confidence=payload.mental.confidence if payload.mental else None,
+        text_score=label_score(payload.text.label if payload.text else None, TEXT_SCORE),
+        text_confidence=payload.text.confidence if payload.text else None,
         facial_score=label_score(payload.facial.label if payload.facial else None, FACE_SCORE),
         facial_confidence=payload.facial.confidence if payload.facial else None,
+        voice_score=label_score(payload.voice.label if payload.voice else None, VOICE_SCORE),
+        voice_confidence=payload.voice.confidence if payload.voice else None,
         final_score=payload.final_score,
         overall_confidence=payload.overall_confidence,
         risk_level=payload.risk_level,

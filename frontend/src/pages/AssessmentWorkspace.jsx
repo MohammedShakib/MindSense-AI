@@ -11,9 +11,12 @@ import {
   Download,
   HeartPulse,
   Loader2,
+  MessageSquare,
+  Mic,
   RefreshCw,
   ScanFace,
   ShieldCheck,
+  Square,
 } from 'lucide-react';
 import {
   buildFinalAssessment,
@@ -22,6 +25,8 @@ import {
   getAuthToken,
   predictFacialEmotion,
   predictMentalRisk,
+  predictTextEmotion,
+  predictVoiceEmotion,
 } from '../lib/api';
 import BrandIcon from '../components/BrandIcon';
 import { openAssessmentReport } from '../lib/report';
@@ -133,6 +138,11 @@ export default function AssessmentWorkspace() {
   const [options, setOptions] = useState(defaultOptions);
   const [mentalResult, setMentalResult] = useState(null);
   const [faceResult, setFaceResult] = useState(null);
+  const [textInput, setTextInput] = useState('');
+  const [textResult, setTextResult] = useState(null);
+  const [voiceResult, setVoiceResult] = useState(null);
+  const [voiceConsent, setVoiceConsent] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [finalResult, setFinalResult] = useState(null);
   const [savedAssessment, setSavedAssessment] = useState(null);
   const [saveStatus, setSaveStatus] = useState('');
@@ -143,6 +153,9 @@ export default function AssessmentWorkspace() {
   const [error, setError] = useState('');
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+  const recorderRef = useRef(null);
+  const voiceChunksRef = useRef([]);
+  const voiceStartRef = useRef(0);
 
   useEffect(() => {
     fetchMentalOptions()
@@ -176,18 +189,27 @@ export default function AssessmentWorkspace() {
     }));
   };
 
-  const refreshFusion = async (mental = mentalResult, face = faceResult) => {
+  const refreshFusion = async (
+    mental = mentalResult,
+    face = faceResult,
+    text = textResult,
+    voice = voiceResult
+  ) => {
     const result = await buildFinalAssessment({
       mental_label: mental?.label,
       mental_confidence: mental?.confidence,
       facial_label: face?.face_detected === false ? null : face?.label,
       facial_confidence: face?.confidence,
+      text_label: text?.label,
+      text_confidence: text?.confidence,
+      voice_label: voice?.label,
+      voice_confidence: voice?.confidence,
     });
     setFinalResult(result);
     return result;
   };
 
-  const saveCompletedAssessment = async (mental, face, final) => {
+  const saveCompletedAssessment = async (mental, face, text, voice, final) => {
     setSavedAssessment(null);
 
     if (!getAuthToken()) {
@@ -212,6 +234,20 @@ export default function AssessmentWorkspace() {
               confidence: face?.confidence,
               probabilities: face?.probabilities,
             },
+        text: text
+          ? {
+              label: text.label,
+              confidence: text.confidence,
+              probabilities: text.probabilities,
+            }
+          : null,
+        voice: voice
+          ? {
+              label: voice.label,
+              confidence: voice.confidence,
+              probabilities: voice.probabilities,
+            }
+          : null,
         final_score: final.score,
         overall_confidence: final.confidence,
         risk_level: final.level,
@@ -219,6 +255,8 @@ export default function AssessmentWorkspace() {
         modalities_used: [
           mental ? 'behavioural' : null,
           face?.face_detected === false ? null : 'facial',
+          text ? 'text' : null,
+          voice ? 'voice' : null,
         ].filter(Boolean),
       });
       setSavedAssessment(saved);
@@ -234,8 +272,101 @@ export default function AssessmentWorkspace() {
     try {
       const result = await predictMentalRisk(form);
       setMentalResult(result);
-      const final = await refreshFusion(result, faceResult);
-      await saveCompletedAssessment(result, faceResult, final);
+      await refreshFusion(result, faceResult, textResult, voiceResult);
+      setStep('optional');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const runText = async () => {
+    if (!textInput.trim()) {
+      setError('Write a short check-in before running text analysis.');
+      return;
+    }
+
+    setBusy('text');
+    setError('');
+    try {
+      const result = await predictTextEmotion(textInput.trim());
+      setTextResult(result);
+      await refreshFusion(mentalResult, faceResult, result, voiceResult);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const startVoiceRecording = async () => {
+    setError('');
+    if (!voiceConsent) {
+      setError('Please confirm microphone consent before recording a voice sample.');
+      return;
+    }
+    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+      setError('Voice recording is not supported in this browser.');
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      voiceChunksRef.current = [];
+      voiceStartRef.current = Date.now();
+      const recorder = new MediaRecorder(stream);
+      recorderRef.current = recorder;
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          voiceChunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((track) => track.stop());
+        const audioBlob = new Blob(voiceChunksRef.current, { type: recorder.mimeType || 'audio/webm' });
+        const durationSeconds = Math.round((Date.now() - voiceStartRef.current) / 100) / 10;
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          setBusy('voice');
+          try {
+            const result = await predictVoiceEmotion({
+              audio: reader.result,
+              duration_seconds: durationSeconds,
+            });
+            setVoiceResult(result);
+            await refreshFusion(mentalResult, faceResult, textResult, result);
+          } catch (err) {
+            setError(err.message);
+          } finally {
+            setBusy('');
+          }
+        };
+        reader.readAsDataURL(audioBlob);
+      };
+
+      recorder.start();
+      setIsRecording(true);
+    } catch {
+      setError('Microphone permission is required for voice emotion capture.');
+    }
+  };
+
+  const stopVoiceRecording = () => {
+    if (recorderRef.current && recorderRef.current.state !== 'inactive') {
+      recorderRef.current.stop();
+    }
+    setIsRecording(false);
+  };
+
+  const finishAssessment = async () => {
+    setBusy('final');
+    setError('');
+    try {
+      const final = await refreshFusion(mentalResult, faceResult, textResult, voiceResult);
+      await saveCompletedAssessment(mentalResult, faceResult, textResult, voiceResult, final);
       setStep('results');
     } catch (err) {
       setError(err.message);
@@ -294,6 +425,11 @@ export default function AssessmentWorkspace() {
   const resetAssessment = () => {
     setMentalResult(null);
     setFaceResult(null);
+    setTextInput('');
+    setTextResult(null);
+    setVoiceResult(null);
+    setVoiceConsent(false);
+    setIsRecording(false);
     setFinalResult(null);
     setSavedAssessment(null);
     setSaveStatus('');
@@ -307,6 +443,8 @@ export default function AssessmentWorkspace() {
         assessment: savedAssessment,
         mentalResult,
         faceResult,
+        textResult,
+        voiceResult,
         finalResult,
       });
     } catch (err) {
@@ -317,6 +455,7 @@ export default function AssessmentWorkspace() {
   const steps = [
     { id: 'face', label: 'Facial Emotion', icon: ScanFace },
     { id: 'mental', label: 'Behavioural Data', icon: Brain },
+    { id: 'optional', label: 'Text & Voice', icon: MessageSquare },
     { id: 'results', label: 'Final Result', icon: CheckCircle2 },
   ];
 
@@ -349,7 +488,7 @@ export default function AssessmentWorkspace() {
         </section>
 
         <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
             {steps.map((item, index) => {
               const Icon = item.icon;
               const active = item.id === step;
@@ -549,6 +688,98 @@ export default function AssessmentWorkspace() {
           </section>
         )}
 
+        {step === 'optional' && (
+          <section className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_360px]">
+            <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="mb-5">
+                <div className="mb-1 text-xs font-semibold uppercase tracking-widest text-purple-600">Optional Signals</div>
+                <h2 className="text-2xl font-semibold">Add Text and Voice Signals</h2>
+                <p className="text-sm font-normal text-slate-500">
+                  Add a short check-in or voice sample to make the final assessment more multimodal. You can skip these.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                    <MessageSquare className="h-4 w-4 text-blue-600" />
+                    Text Check-in
+                  </div>
+                  <textarea
+                    value={textInput}
+                    onChange={(event) => setTextInput(event.target.value)}
+                    rows={6}
+                    maxLength={4000}
+                    placeholder="Write a short, non-clinical check-in about your day, energy, stress, or mood..."
+                    className="w-full resize-none rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                  />
+                  <button
+                    onClick={runText}
+                    disabled={busy === 'text' || !textInput.trim()}
+                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {busy === 'text' ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageSquare className="h-4 w-4" />}
+                    Analyze Text
+                  </button>
+                </div>
+
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                    <Mic className="h-4 w-4 text-cyan-600" />
+                    Voice Sample
+                  </div>
+                  <label className="mb-3 flex items-start gap-3 rounded-lg border border-cyan-100 bg-cyan-50 p-3 text-sm font-medium leading-6 text-cyan-800">
+                    <input
+                      type="checkbox"
+                      checked={voiceConsent}
+                      onChange={(event) => setVoiceConsent(event.target.checked)}
+                      className="mt-1 h-4 w-4 rounded border-cyan-300 text-cyan-600 focus:ring-cyan-500"
+                    />
+                    <span>I consent to microphone access for optional voice signal analysis. Raw audio is sent for prediction and is not intentionally stored by this workflow.</span>
+                  </label>
+                  <div className="rounded-lg bg-white p-4 text-sm font-medium leading-6 text-slate-500">
+                    Record a short 5-15 second sample. Speak naturally; avoid sharing private details.
+                  </div>
+                  <button
+                    onClick={isRecording ? stopVoiceRecording : startVoiceRecording}
+                    disabled={busy === 'voice'}
+                    className={`mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                      isRecording ? 'bg-rose-600 hover:bg-rose-500' : 'bg-cyan-600 hover:bg-cyan-500'
+                    }`}
+                  >
+                    {busy === 'voice' ? <Loader2 className="h-4 w-4 animate-spin" /> : isRecording ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    {isRecording ? 'Stop Recording' : 'Record Voice'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                <button
+                  onClick={() => setStep('mental')}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back
+                </button>
+                <button
+                  onClick={finishAssessment}
+                  disabled={busy === 'final'}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {busy === 'final' ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                  Finish Assessment
+                </button>
+              </div>
+            </div>
+
+            <aside className="space-y-5">
+              <ResultPanel icon={Brain} label="Behavioural" value={mentalResult?.label} confidence={mentalResult?.confidence} tone="indigo" />
+              <ResultPanel icon={MessageSquare} label="Text Emotion" value={textResult?.label} confidence={textResult?.confidence} />
+              <ResultPanel icon={Mic} label="Voice Emotion" value={voiceResult?.label} confidence={voiceResult?.confidence} tone="cyan" />
+            </aside>
+          </section>
+        )}
+
         {step === 'results' && (
           <section className="space-y-5">
             {error && (
@@ -558,7 +789,7 @@ export default function AssessmentWorkspace() {
             </div>
             )}
 
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-5">
               <ResultPanel
                 icon={Brain}
                 label="Mental Risk"
@@ -571,6 +802,19 @@ export default function AssessmentWorkspace() {
                 label="Face Emotion"
                 value={faceResult?.label}
                 confidence={faceResult?.confidence}
+                tone="cyan"
+              />
+              <ResultPanel
+                icon={MessageSquare}
+                label="Text Emotion"
+                value={textResult?.label}
+                confidence={textResult?.confidence}
+              />
+              <ResultPanel
+                icon={Mic}
+                label="Voice Emotion"
+                value={voiceResult?.label}
+                confidence={voiceResult?.confidence}
                 tone="cyan"
               />
               <div className={`rounded-lg border p-4 ${finalStyle}`}>
@@ -606,6 +850,22 @@ export default function AssessmentWorkspace() {
                     Facial Emotion Probability
                   </div>
                   <ProbabilityBars data={faceResult?.probabilities} />
+                </div>
+
+                <div>
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                    <MessageSquare className="h-4 w-4 text-blue-600" />
+                    Text Emotion Probability
+                  </div>
+                  <ProbabilityBars data={textResult?.probabilities} />
+                </div>
+
+                <div>
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                    <Mic className="h-4 w-4 text-cyan-600" />
+                    Voice Emotion Probability
+                  </div>
+                  <ProbabilityBars data={voiceResult?.probabilities} />
                 </div>
               </div>
             </div>
