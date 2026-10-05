@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api import admin, auth, ml
+from app.api import admin, assessments, auth, ml
 from app.core.config import settings
 from app.core.database import Base, engine
 from app.models import assessment, user  # noqa: F401
@@ -26,6 +26,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 app.include_router(ml.router, prefix="/api/ml", tags=["ml"])
+app.include_router(assessments.router, prefix="/api/assessments", tags=["assessments"])
 
 @app.on_event("startup")
 async def init_db():

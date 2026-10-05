@@ -15,7 +15,9 @@ import {
 } from 'lucide-react';
 import {
   buildFinalAssessment,
+  createAssessment,
   fetchMentalOptions,
+  getAuthToken,
   predictFacialEmotion,
   predictMentalRisk,
 } from '../lib/api';
@@ -129,6 +131,8 @@ export default function AssessmentWorkspace() {
   const [mentalResult, setMentalResult] = useState(null);
   const [faceResult, setFaceResult] = useState(null);
   const [finalResult, setFinalResult] = useState(null);
+  const [savedAssessment, setSavedAssessment] = useState(null);
+  const [saveStatus, setSaveStatus] = useState('');
   const [cameraReady, setCameraReady] = useState(false);
   const [step, setStep] = useState('face');
   const [busy, setBusy] = useState('');
@@ -176,6 +180,48 @@ export default function AssessmentWorkspace() {
       facial_confidence: face?.confidence,
     });
     setFinalResult(result);
+    return result;
+  };
+
+  const saveCompletedAssessment = async (mental, face, final) => {
+    setSavedAssessment(null);
+
+    if (!getAuthToken()) {
+      setSaveStatus('Sign in to save this assessment to your history.');
+      return;
+    }
+
+    setSaveStatus('Saving assessment...');
+    try {
+      const saved = await createAssessment({
+        mental: mental
+          ? {
+              label: mental.label,
+              confidence: mental.confidence,
+              probabilities: mental.probabilities,
+            }
+          : null,
+        facial: face?.face_detected === false
+          ? null
+          : {
+              label: face?.label,
+              confidence: face?.confidence,
+              probabilities: face?.probabilities,
+            },
+        final_score: final.score,
+        overall_confidence: final.confidence,
+        risk_level: final.level,
+        recommendation: final.recommendation,
+        modalities_used: [
+          mental ? 'behavioural' : null,
+          face?.face_detected === false ? null : 'facial',
+        ].filter(Boolean),
+      });
+      setSavedAssessment(saved);
+      setSaveStatus('Assessment saved to your history.');
+    } catch (err) {
+      setSaveStatus(err.message || 'Assessment result generated, but saving failed.');
+    }
   };
 
   const runMental = async () => {
@@ -184,7 +230,8 @@ export default function AssessmentWorkspace() {
     try {
       const result = await predictMentalRisk(form);
       setMentalResult(result);
-      await refreshFusion(result, faceResult);
+      const final = await refreshFusion(result, faceResult);
+      await saveCompletedAssessment(result, faceResult, final);
       setStep('results');
     } catch (err) {
       setError(err.message);
@@ -240,6 +287,8 @@ export default function AssessmentWorkspace() {
     setMentalResult(null);
     setFaceResult(null);
     setFinalResult(null);
+    setSavedAssessment(null);
+    setSaveStatus('');
     setError('');
     setStep('face');
   };
@@ -530,6 +579,18 @@ export default function AssessmentWorkspace() {
                 {finalResult?.recommendation || 'Run the assessment to generate a local wellness snapshot.'}
               </p>
             </div>
+
+            {saveStatus && (
+              <div className={`rounded-lg border p-4 text-sm font-medium ${
+                savedAssessment
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                  : saveStatus.startsWith('Saving')
+                    ? 'border-slate-200 bg-white text-slate-600'
+                    : 'border-amber-200 bg-amber-50 text-amber-700'
+              }`}>
+                {saveStatus}
+              </div>
+            )}
           </section>
         )}
       </div>

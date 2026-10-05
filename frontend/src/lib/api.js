@@ -161,3 +161,23 @@ export function predictFacialEmotion(image) {
 export function buildFinalAssessment(payload) {
   return postJson('/api/ml/final-assessment', payload);
 }
+
+export function createAssessment(payload) {
+  return postJson('/api/assessments', payload);
+}
+
+export async function fetchMyAssessments() {
+  const response = await fetch(`${API_BASE_URL}/api/assessments/me`, {
+    headers: authHeaders(),
+  });
+
+  return parseResponse(response, []);
+}
+
+export async function fetchAssessment(assessmentId) {
+  const response = await fetch(`${API_BASE_URL}/api/assessments/${assessmentId}`, {
+    headers: authHeaders(),
+  });
+
+  return parseResponse(response, {});
+}
