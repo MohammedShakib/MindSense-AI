@@ -8,10 +8,12 @@ import {
   Brain,
   Camera,
   CheckCircle2,
+  Download,
   HeartPulse,
   Loader2,
   RefreshCw,
   ScanFace,
+  ShieldCheck,
 } from 'lucide-react';
 import {
   buildFinalAssessment,
@@ -22,6 +24,7 @@ import {
   predictMentalRisk,
 } from '../lib/api';
 import BrandIcon from '../components/BrandIcon';
+import { openAssessmentReport } from '../lib/report';
 
 const defaultOptions = {
   genders: ['Female', 'Male'],
@@ -133,6 +136,7 @@ export default function AssessmentWorkspace() {
   const [finalResult, setFinalResult] = useState(null);
   const [savedAssessment, setSavedAssessment] = useState(null);
   const [saveStatus, setSaveStatus] = useState('');
+  const [cameraConsent, setCameraConsent] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
   const [step, setStep] = useState('face');
   const [busy, setBusy] = useState('');
@@ -242,6 +246,10 @@ export default function AssessmentWorkspace() {
 
   const startCamera = async () => {
     setError('');
+    if (!cameraConsent) {
+      setError('Please confirm camera consent before starting facial emotion capture.');
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: 960, height: 720, facingMode: 'user' },
@@ -293,6 +301,19 @@ export default function AssessmentWorkspace() {
     setStep('face');
   };
 
+  const downloadReport = () => {
+    try {
+      openAssessmentReport({
+        assessment: savedAssessment,
+        mentalResult,
+        faceResult,
+        finalResult,
+      });
+    } catch (err) {
+      setError(err.message || 'Report could not be opened.');
+    }
+  };
+
   const steps = [
     { id: 'face', label: 'Facial Emotion', icon: ScanFace },
     { id: 'mental', label: 'Behavioural Data', icon: Brain },
@@ -323,6 +344,10 @@ export default function AssessmentWorkspace() {
       </header>
 
       <div className="mx-auto max-w-7xl px-5 py-5">
+        <section className="mb-5 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm font-medium leading-6 text-amber-800">
+          MindSense AI is a wellness awareness tool, not a medical diagnosis or treatment service. Results should be used for reflection and tracking only.
+        </section>
+
         <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {steps.map((item, index) => {
@@ -389,6 +414,18 @@ export default function AssessmentWorkspace() {
                   </button>
                 </div>
               </div>
+
+              <label className="mb-4 flex items-start gap-3 rounded-lg border border-cyan-100 bg-cyan-50 p-3 text-sm font-medium leading-6 text-cyan-800">
+                <input
+                  type="checkbox"
+                  checked={cameraConsent}
+                  onChange={(event) => setCameraConsent(event.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-cyan-300 text-cyan-600 focus:ring-cyan-500"
+                />
+                <span>
+                  I consent to camera access for facial emotion analysis. The captured frame is sent to the backend for prediction and is not intentionally stored by this workflow.
+                </span>
+              </label>
 
               <div className="aspect-video overflow-hidden rounded-lg bg-slate-950">
                 <video ref={videoRef} autoPlay playsInline muted className="h-full w-full object-cover" />
@@ -578,6 +615,24 @@ export default function AssessmentWorkspace() {
               <p className="text-lg font-medium text-slate-800">
                 {finalResult?.recommendation || 'Run the assessment to generate a local wellness snapshot.'}
               </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                Safety Note
+              </div>
+              <p className="text-sm font-normal leading-6 text-slate-500">
+                This result is not a diagnosis. If the pattern feels concerning or continues over time, consider talking with a trusted adult, counselor, or qualified professional.
+              </p>
+              <button
+                onClick={downloadReport}
+                disabled={!finalResult}
+                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Download className="h-4 w-4" />
+                Download Report
+              </button>
             </div>
 
             {saveStatus && (

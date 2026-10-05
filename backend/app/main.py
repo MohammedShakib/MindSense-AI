@@ -30,6 +30,8 @@ app.include_router(assessments.router, prefix="/api/assessments", tags=["assessm
 
 @app.on_event("startup")
 async def init_db():
+    if settings.SECRET_KEY == "supersecretkey_please_change_in_production":
+        print("WARNING: Using the default SECRET_KEY. Set a strong SECRET_KEY before production use.")
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)

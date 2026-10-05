@@ -83,6 +83,11 @@ async def forgot_password(
     user = result.scalars().first()
     if not user:
         return {"msg": "If an account exists, an OTP has been sent."}
+
+    if not settings.PASSWORD_RESET_DEV_MODE:
+        return {
+            "msg": "Password reset email delivery is not configured. Please contact support.",
+        }
         
     otp_code = "".join([str(secrets.randbelow(10)) for _ in range(6)])
     otp_hash = get_password_hash(otp_code)
@@ -97,8 +102,7 @@ async def forgot_password(
     db.add(otp_record)
     await db.commit()
     
-    # TODO: Send email with OTP (simulated for now)
-    print(f"SIMULATED EMAIL TO {req.email}: Your OTP is {otp_code}")
+    print(f"DEV PASSWORD RESET OTP for {req.email}: {otp_code}")
     
     return {"msg": "If an account exists, an OTP has been sent."}
 

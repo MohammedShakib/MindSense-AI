@@ -6,12 +6,14 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
+  Download,
   FileText,
   History,
   Mic,
   ScanFace,
   TrendingUp,
 } from 'lucide-react';
+import { openAssessmentReport } from '../../lib/report';
 
 function formatDate(value) {
   if (!value) return 'No date';
@@ -259,6 +261,7 @@ export function RecentAssessmentsReal({ assessments }) {
               <th className="pb-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Score</th>
               <th className="pb-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Level</th>
               <th className="pb-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Signals</th>
+              <th className="pb-3 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Report</th>
             </tr>
           </thead>
           <tbody>
@@ -283,6 +286,15 @@ export function RecentAssessmentsReal({ assessments }) {
                     {hasModality(item, 'text') && <FileText className="h-4 w-4 text-blue-500" title="Text" />}
                     {hasModality(item, 'voice') && <Mic className="h-4 w-4 text-cyan-500" title="Voice" />}
                   </div>
+                </td>
+                <td className="py-4 text-right">
+                  <button
+                    onClick={() => openAssessmentReport({ assessment: item })}
+                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    PDF
+                  </button>
                 </td>
               </tr>
             ))}
