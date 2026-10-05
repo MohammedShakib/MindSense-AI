@@ -1,13 +1,14 @@
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy import func, select, text
 
+from app.api import deps
 from app.core.database import SessionLocal, engine
 from app.models.assessment import Assessment
 from app.models.user import User
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(deps.get_current_active_superuser)])
 
 
 @router.get("/users")
